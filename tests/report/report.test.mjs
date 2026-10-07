@@ -242,7 +242,7 @@ test('cmd-report: writes the report and the owner copy, logs the event, --summar
     const bad = path.join(s.root, 'bad-comment.md');
     fs.writeFileSync(bad, '> Панель поставила 9,5 из 10, все проверяющие довольны.\n');
     await assert.rejects(reportCmd(['report', s.runDir, '--comment', bad], ctx), /never shows/);
-    const copy = path.join(s.root, 'reports', 'gauntlet-20261006-0930-aaaaaa.ru.md');
+    const copy = path.join(s.root, 'reports', 'gauntlet-20260115-0930-aaaaaa.ru.md');
     assert.equal(fs.readFileSync(copy, 'utf8'), md);
     assert.equal(md.charCodeAt(0) === 0xfeff, false);
     assert.equal(md.includes('\r'), false);

@@ -231,6 +231,27 @@ tamper-**evident**, not tamper-**proof**.
     patterns on its lines and with every pattern on its prose-like values (4 or more words, or 30 or
     more characters): a shop's own rating "9,5" or the word "panel" in a short product name is not a
     trace, but "deliberate, do not flag" in a long text value is. Small data files get every pattern.
+    **Version words are narrowed (bug 15).** The scan catches the history of the reviewed work itself
+    («версия 3 плана/документа/отчёта», «Версия 7. Собрано …», «по сравнению с версией 2», «в версии 3
+    исправлено», «предыдущая версия», "version 3 of the plan", "previous version", "v2 → v3"), not
+    product numbering («Версия 1 — один тег, Версия 2 — приложение», «API версии 3»). Besides the
+    document-noun forms («версия 3 плана», «версия 3 этого плана», «документ версии 3»), the scan also
+    catches a version number followed by a review note («Версия 3 (после замечаний)», «Версия 2 —
+    учтены замечания», "Version 3 (after review)", "Version 3 — fixed typos"), a change note against an
+    earlier number («Что изменилось с версии 2», «в отличие от версии 2», «Обновлено в версии 4»,
+    "changes since version 2", «версия 2 → версия 3»), a line that only says «Это версия 3.», and «в версии 3
+    добавлен раздел». The price, in both directions. Still passing: a bare «Версия 3» heading, a
+    plain changelog line without a noun, a review note or a fix verb («в версии 3 добавлен экспорт»,
+    "version 4 of the checkout"), and a bare "since version 3". Still stopped although they may be
+    product text: «Версия 1 → Версия 2» as an upgrade path, "in contrast to version 2",
+    «версия 2 материала темы»; the window asks the owner for a `traceAllow` phrase for those. «работа»
+    and the plain nominative of «описание» / «материал» after the number are not counted as a
+    document noun («версия 3 работы блока» is how a block works). The rest of the loop does not
+    depend on this word: earlier verdicts, rounds, scores and «исправлено» are caught by their own
+    patterns. After this narrowing a `traceAllow` phrase that no longer covers a trace word is refused
+    (a phrase that covers nothing is not needed); delete it, which needs no owner words, and do not
+    copy `strip.json` from an older run. *CODE; the gap is accepted.*
+
     What is read with the reduced set is counted: SETUP-SUMMARY and the report list the large data
     files, how many short values were not checked with every pattern and how many patterns that is.
     A short value (a number, a name) can still carry a trace word that the reduced set does not look
@@ -323,6 +344,27 @@ tamper-**evident**, not tamper-**proof**.
     the removed files (first 20). Any other new file voids the round. The "who was running" list is also weak for a job that gave
     no answer: its window stays open, so it is named for every later write. *CODE + EVID.*
 
+29. **The code cross-check of findings is a rule on quotes, and a rule can be wrong both ways (SPEC 14.6a).** A finding is
+    taken for the planted error when its quote sits on the planted words: 12 characters at least, at most twice the planted
+    passage plus 40, standing once in the file, and covering 60 % of the changed characters. Narrow on purpose: a quote of
+    the neighbouring lines, of the unchanged beginning of the same line, of a whole section, a bare number, or in another file
+    is not taken. Two prices. (a) A reviewer who quotes the planted sentence to complain about something else in it is counted
+    as having caught the planted error, and that other complaint does not reach this round's to-do list (the matcher's explicit
+    word "score below 3, `alsoReal`" for that very pair prevents it); recall can be a little too high for that reason. (b) A
+    reviewer who points at the planted place with a short quote (a core of the changed words) is left to the matcher, so a
+    matcher that misses it still lets that finding through. Omission and visual planted errors have no planted words and are
+    left to the matcher entirely. The other half of the fix is a plain bug: the matcher's `alsoReal` used to keep a finding
+    real whatever pair it was written on; now it counts only on the pair that matched the finding. The report lists every
+    place where the code and the matcher disagreed. Three more prices. (c) When the matcher scores the very pair below 3
+    and sets `alsoReal`, the matcher's word stands: the finding stays among the real problems even if it quotes the
+    planted words, so a planted error can still reach the to-do list; the report names such findings in the
+    `crossKept` line. (d) A code catch is written as a detection row before the lens facts are computed, so it also
+    counts for the attention check: a lens can be judged valid because its reviewer merely quoted the planted words.
+    (e) The check only adds catches. An earlier stage-1 catch whose finding never found the planted error (it was
+    matched by position or by a neighbouring line) is not taken back, so recall and the attention statistics can still
+    count a false catch; the measurement ledger rows do not say which catches came from the code and which from the
+    matcher. *CODE + EVID.*
+
 ## What "done" therefore means
 
 `DONE` means: two clean rounds in a row on one version, the second blind with a fresh panel, fresh
@@ -331,6 +373,24 @@ blockers and majors in the worst lens; the delivered files are identical to the 
 JSON and HTML files are compared after removing a BOM and normalising line endings; other files byte
 for byte); and the integrity audit passed when `done` ran (a failed audit refuses `done`). If the owner waived
 problems, cut requirement lines or loosened limits, the headline says «Готово с вашими исключениями».
+
+The integrity audit cannot always make every comparison. A report of an older run rebuilt by a newer
+version of the program cannot compare the program's own word lists (`catalog/*.json`, the list of planted-error
+kinds) with the hashes taken when the run froze: the lists changed with the program. The audit then still
+runs every other check, and the summary and report section 13 say «пройдена не полностью» with the version
+the run started with, the version that rebuilt the report and the lists that were not compared. This is
+allowed only when FROZEN.json and the running program both name a version (or a git head) and the two differ;
+a copy of the program with no readable git head proves nothing and does not excuse an edit. The same
+version with other lists, or any change in the run's own frozen files, fails the audit. Limit: a list edit
+that comes with a new commit cannot be told from a program update, and only the «not compared» line of the
+summary and of report section 13 shows it; `step`, `owner` and `done` still refuse such a run. In a report
+that is being rebuilt, the check of the report numbers compares two readings of the same files, so it
+cannot fail; section 13 of a rebuilt report proves the chain, the frozen files and the templates, not the
+numbers. A partial pass («пройдена не полностью») exits with 0, like a full pass: a script that wants to tell
+them apart must read `notCompared` (the `NOT COMPARED` lines). A report that is
+older than the last events of the run is listed as «not compared» too (its numbers describe an earlier
+state), never as a failed honesty check and never as a pass. *CODE; the version label is read from
+FROZEN.json, which the run's own ledger pins.*
 
 It does not mean the work has no serious problems. The fixed report sentence says it: «Перепроверенных
 серьёзных проблем в слепом круге не осталось. Это значит «проверяющие таких не нашли», а не «их

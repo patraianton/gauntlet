@@ -13,7 +13,7 @@ import { main, removeIncludeText, INCLUDE_LINE, INCLUDE_HEADING } from '../../in
 
 const REPO = path.resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const REPO_FWD = REPO.split(path.sep).join('/');
-const STAMP = '20261006';
+const STAMP = '20260115';
 const SKILL_FILES = ['SKILL.md', 'reference/agent-mode.md', 'reference/never.md', 'reference/workflow-mode.md'];
 const BOM = '﻿';
 
@@ -331,10 +331,10 @@ test('r2-f25: an upgrade replaces the earlier gauntlet copy; uninstall removes i
     const skill = path.join(root, '.claude', 'skills', 'gauntlet', 'SKILL.md');
     fs.writeFileSync(skill, fs.readFileSync(skill, 'utf8').replace('# /gauntlet', '# /gauntlet (older)'));
     const lines = [];
-    const code = main(['--apply'], { GAUNTLET_INSTALL_ROOT: root, GAUNTLET_CLAUDE_HOMES_DIR: 'claude-homes', GAUNTLET_INSTALL_DATE: '20261007' }, (x) => lines.push(...String(x).split('\n')));
+    const code = main(['--apply'], { GAUNTLET_INSTALL_ROOT: root, GAUNTLET_CLAUDE_HOMES_DIR: 'claude-homes', GAUNTLET_INSTALL_DATE: '20260116' }, (x) => lines.push(...String(x).split('\n')));
     assert.equal(code, 0);
     assert.ok(lines.some((l) => /replace an earlier gauntlet copy/.test(l)), lines.join('\n'));
-    assert.ok(!fs.existsSync(`${skill}.bak-20261007-gauntlet`), 'no backup of our own older copy');
+    assert.ok(!fs.existsSync(`${skill}.bak-20260116-gauntlet`), 'no backup of our own older copy');
     // an older install (before this fix) left a backup of our own copy: uninstall deletes it
     fs.writeFileSync(`${skill}.bak-20261005-gauntlet`, fs.readFileSync(skill));
     r = run(root, ['--uninstall', '--apply']);

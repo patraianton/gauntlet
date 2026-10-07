@@ -176,7 +176,7 @@ test('the setting: fewer decoys than the default needs the owner\'s words, like 
 
 // ---------------------------------------------------------------- ledger and statistics
 
-const RUN = { runId: '20261007-1000-aaaaaa', project: 'demo', artifactType: 'marketing-plan', models: { optIn: [] } };
+const RUN = { runId: '20260116-1000-aaaaaa', project: 'demo', artifactType: 'marketing-plan', models: { optIn: [] } };
 
 function decoyRows(round, outcomes, job = 'jobaaaaa') {
   return outcomes.map((outcome, i) => ({

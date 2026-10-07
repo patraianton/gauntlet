@@ -171,7 +171,7 @@ test('the setting: fewer controls than the default needs the owner\'s words; mor
   assert.equal(applyDefaults({}).canaries.controlsPerRound, 4);
 });
 
-const RUN = { runId: '20261007-1000-bbbbbb', project: 'demo', artifactType: 'marketing-plan', models: { optIn: [] } };
+const RUN = { runId: '20260116-1000-bbbbbb', project: 'demo', artifactType: 'marketing-plan', models: { optIn: [] } };
 
 function controlRows(round, outcomes, job = 'jobbbbbb') {
   return outcomes.map((outcome, i) => ({

@@ -114,7 +114,7 @@ function reviewerAnswers(R, round, opts = {}) {
  * variants: 'done' | 'plateau' | 'edited' | 'new'
  */
 export function makeRun(root, dataHome, variant = 'done', opts = {}) {
-  const runId = `20261006-0930-${{ done: 'aaaaaa', plateau: 'bbbbbb', edited: 'cccccc', new: 'dddddd' }[variant]}`;
+  const runId = `20260115-0930-${{ done: 'aaaaaa', plateau: 'bbbbbb', edited: 'cccccc', new: 'dddddd' }[variant]}`;
   const runDir = path.join(root, 'gauntlet-runs', runId);
   const P = runPaths(runDir);
   const dp = dataPaths(dataHome);

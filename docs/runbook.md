@@ -201,7 +201,10 @@ glob that drops a file without a trace, is **narrowing** — it is refused unles
 with `step $RUN --owner-quote "<the owner's words>" --question "<what you asked>"`. Fix strip.json and run `step` again as often as needed
 before freeze; no quote is needed for that. SETUP-SUMMARY and the report list every exclusion, every
 rule with its match count and the rebuild command. After freeze, `amend --what strip` runs the same
-preview; new non-trace removals and every new `traceAllow` phrase need the owner's words.
+preview; new non-trace removals and every new `traceAllow` phrase need the owner's words. A `traceAllow` phrase that
+no longer covers a trace word (the version words were narrowed on 07.10) is refused as not needed; delete it
+(removing an excuse needs no owner words), and do not copy `strip.json` from an older run: start with
+`"traceAllow": []` and add a phrase only after the first `BLOCKED_TRACE` names it.
 
 **`mechanical.json`** — cheap checks before any agent runs. A failing `blocker`/`major` check stops
 the round before it starts (`BLOCKED_PRECHECK`).
@@ -218,6 +221,19 @@ the round before it starts (`BLOCKED_PRECHECK`).
   ]
 }
 ```
+
+Which field belongs to which `kind`: `json-valid` takes `glob` (default `**/*.json`); `count` takes `glob`,
+`value` (a number), and optionally `op` (`>=`, `=`, `<=`) and `pointer`; `file-exists` takes `path` (one exact
+file, `<root name>/<file>`; **not** `glob`); `no-forbidden-text` takes `patterns` (regular expressions) and
+optionally `glob`; `command` takes `cmd` (a name from `allowExecutables`) and optionally `args`. The first
+`step` checks the whole file before anything is frozen: an unknown kind, a missing field, a field of another
+kind, a bad regex, a program outside the allowlist, or a path or glob that matches nothing in the material is
+refused with a list that names each check (`K1: ... Fix: ...`). A `file-exists` path must already be a file of the
+material at the first `step`: a check for a file the window will create after freeze cannot be frozen (create the file
+first, or use another kind). Fix the file and run `step` again; no owner
+words are needed before freeze. A check that was frozen with a wrong shape by an older program (a `file-exists` with
+`glob`) could never run: `amend --what mechanical` may replace it by a sound check with the same id and the same or
+a higher severity without the owner's words. Deleting it or lowering its severity still needs them. `amend --what mechanical` runs the same check (exit 4, nothing written).
 
 **`run.json`** — edit before freeze only:
 
@@ -299,6 +315,13 @@ node $PL step $RUN
 | 20 | Read the to-do (`todo $RUN` reprints it). Act on it (section 2 and 3), then `step` again. |
 | 30 | Stop. Show the owner `report $RUN --summary` and the report path. Start nothing new without the owner's word. |
 
+Round numbers in `status`, the to-do, the report and the summary are the REAL ones: only rounds that reached
+the reviewers are counted (the same set the round limit, the plateau and the best version use). The run
+folder follows in brackets where it differs («round 3 (folder 04)», «круг 3 (папка 04)»). A blocked
+attempt (`BLOCKED_PRECHECK` / `BLOCKED_TRACE`) is shown as «attempt (folder 01)» and is never a round.
+`ledger`/`gate` files, `best.json` and the `audit` details keep the folder number: the «round N» prefix in the lines
+of `audit` and in the `control-run` output is the folder number, not the real round.
+
 The spawn list of a round also holds one **decoy writer** job beside the reviewers (label `decoy`); spawn it like
 the others. Its answer and the decoys it makes stay sealed until the round closes; a lost one is given up like any
 other job (`--give-up`) and the round simply goes on without decoys. When the verifiers are asked, some of their
@@ -340,12 +363,12 @@ After the decision `DONE`: `node $PL done $RUN`, then `report $RUN --summary`.
 | `DONE` | 20 | The confirm round was clean on the candidate's version | Run `done $RUN` (exit 30, "готово" if the live files are unchanged) |
 | `RERUN_LENS` | 10 | A lens's answer was invalid or missed its own attention canary; a fresh reviewer re-reads the same copy (once, `maxLensReruns`) | Spawn the printed rerun calls like any other |
 | `INVALID_ROUND` | 20 | Something wrote into the review copy during review; the round counts toward `maxRounds` | Read section 3.1a first: `todo.md` (Russian lines under "What blocks the round") and `rounds\NN\copy-tamper.json` name the files, their times and the jobs that were running. Make sure nothing (you, a tool, a sync) writes into the review base (`<run root>/_wc/`). Then `step` |
-| `BLOCKED_PRECHECK` | 20 | Before any agent ran: a blocker/major mechanical check failed, a primary source does not work now, a material file is not covered by any lens's mandatory reading rule (a file added after freeze), or a folder link/junction sits inside a root; not counted as a round | Fix the material, the source (or its recipe via `amend` with the owner's words), move the uncovered file out of the roots or widen the lenses (`amend --what lenses` with the owner's words), replace the link with a real folder; then `step`. Each block uses up a round number (the next round folder is `rounds\<NN+1>`) but is **not a round**: it counts toward no limit (`maxRounds`), no plateau, no best version and no open count; `status` lists it as an "attempt", and the report shows it as "Попытка круга (папка rounds\NN) не состоялась" with no problem counts and a separate count in section 12 |
-| `BLOCKED_TRACE` | 20 | The review copy contains review traces (score words, "круг 3", "исправлено", "9,5", "FEEDBACK"…) or a strip rule's `expect` failed, or the frozen strip rules now remove material that carries no review trace (a file or text added after freeze), or the rebuilt outputs differ from the material; the copy was deleted; not a round | Remove a real leftover of a review from the material by hand (or add a `strip` rule, `amend --what strip`). **Never rewrite, reword or hide material values to pass the scan, and never split a word to evade it**: for a genuine product word or value (a shop's own rating, "solar panel kits") ask the owner the question the to-do prints, and only on the owner's yes add a `traceAllow` with a `why` (`amend --what strip --owner-quote ... --question ...`). Data files (`.csv .tsv .jsonl .ndjson .json`): small ones get every pattern; in large ones short values are scanned with unambiguous patterns only and every long value (4+ words or 30+ characters) with every pattern. For removed non-trace material: rename or move the new file, or (the owner's words) `amend --what strip --owner-quote`. Then `step` |
+| `BLOCKED_PRECHECK` | 20 | Before any agent ran: a blocker/major mechanical check failed, a primary source does not work now, a material file is not covered by any lens's mandatory reading rule (a file added after freeze), or a folder link/junction sits inside a root; not counted as a round | Fix the material, the source (or its recipe via `amend` with the owner's words), move the uncovered file out of the roots or widen the lenses (`amend --what lenses` with the owner's words), replace the link with a real folder; then `step`. Each block uses up a folder number (the next round folder is `rounds\<NN+1>`) but is **not a round**: it counts toward no limit (`maxRounds`), no plateau, no best version and no open count; `status` lists it as an "attempt", and the report shows it as "Попытка круга (папка rounds\NN) не состоялась" with no problem counts and a separate count in section 12 |
+| `BLOCKED_TRACE` | 20 | The review copy contains review traces (score words, "круг 3", "исправлено", "9,5", "FEEDBACK", the version history of the work itself such as «версия 3 плана» or «по сравнению с версией 2»; product numbering like «Версия 1 / Версия 2» of an integration is not a trace) or a strip rule's `expect` failed, or the frozen strip rules now remove material that carries no review trace (a file or text added after freeze), or the rebuilt outputs differ from the material; the copy was deleted; not a round | Remove a real leftover of a review from the material by hand (or add a `strip` rule, `amend --what strip`). **Never rewrite, reword or hide material values to pass the scan, and never split a word to evade it**: for a genuine product word or value (a shop's own rating, "solar panel kits") ask the owner the question the to-do prints, and only on the owner's yes add a `traceAllow` with a `why` (`amend --what strip --owner-quote ... --question ...`). Data files (`.csv .tsv .jsonl .ndjson .json`): small ones get every pattern; in large ones short values are scanned with unambiguous patterns only and every long value (4+ words or 30+ characters) with every pattern. For removed non-trace material: rename or move the new file, or (the owner's words) `amend --what strip --owner-quote`. Then `step` |
 | `STOP_PLATEAU` | 30 | `plateauRounds` (2) working rounds in a row that reached the reviewers (even if a lens was invalid in them) without fewer open serious problems than the best before them; clean, CONFIRM and DONE still need every lens valid | Escalate (section 6) |
 | `STOP_LIMIT` | 30 | Rounds, confirm rounds or panel tokens exhausted (checked before a round starts, too) | Escalate (section 6) |
 | `STOP_INCONCLUSIVE` | 30 | A lens stayed unreliable while nothing else is open — invalid after its rerun, no attention check possible for it at all, or no attention check two rounds in a row; the run cannot certify. Also used when the lens writer fails twice (reason `lens-writer`) or the planter is lost twice (reason `planter`) | Escalate (section 6) |
-| `STOP_OWNER` | 30 | the owner's `stop` was recorded | Nothing; the report is final |
+| `STOP_OWNER` | 30 | the owner's `stop` was recorded (also when the program had stopped the run before: the report then says «сначала … , а потом вы сами тоже сказали остановить») | Nothing; the report is final |
 
 ### 3.1a `INVALID_ROUND`: who wrote into the copy (SPEC 14.13)
 
@@ -373,6 +396,17 @@ any other new file, `.mypy_cache`, scratch together with another difference. Do 
 Every job folder holds an empty `work\` scratch folder (SPEC 14.13); it is removed with the job folder when the answer is ingested. If a job folder is reported as a
 leftover after a round (a tree with a folder link, for example a virtual environment a reviewer made, is never removed automatically), delete it by hand with the usual care
 (`cmd /c rmdir` for a link first), never through the copy.
+
+### 3.1b Code and matcher disagree about a planted error (SPEC 14.6a)
+
+After the matcher has answered, the program checks every reviewer finding against the planted text itself. If a finding
+quotes the planted words (and is not wider than the passage, stands once in the file and covers most of the changed words)
+and the matcher did not accept it, the finding is counted as a catch of the planted error and never reaches `clusters.json`,
+`todo.md` or the open problems. Where to see it: `rounds\NN\round.json` `crossCheck` (`hits`, `keptReal`, `alsoRealIgnored`), the
+`match` event of the ledger (`codeVsMatcher`), a `detections.json` row with `crossCheck: true`, and a Russian line under the
+round in the report. Nothing is asked of the executor. `keptReal` lists findings where the matcher said "not the planted error,
+but a real problem on the same line": they stay real, as the matcher decided, and the report names them. If the same finding
+shows up in `hits` round after round for a reviewer lens, suspect the matcher template, not the reviewers.
 
 ### 3.2 Other exit-20 messages from `step`
 
@@ -644,7 +678,7 @@ marked contaminated (fixed key, `prePlanted:true`) and never counts toward the 2
    `node $PL report $RUN --bench C:\src\gauntlet\bench\bakery.pass.json`.
    It applies the pass rule below to the run files and prints fixed Russian lines; the window does not
    judge the bench itself. What it reads: The round is the one `status $RUN` names (a
-   `BLOCKED_*` attempt uses up a round number, so it may be `rounds\02` or later):
+   `BLOCKED_*` attempt uses up a folder number, so it may be `rounds\02` or later):
    - own-lens catches: `rounds\<NN>\detections.json`, rows where `lens == targetLens` with outcome
      `caught`. Report **C1 and C2** (not hinted) and **C3–C5** (hinted) separately;
    - pair recall over the five bench lenses, again split C1–C2 / C3–C5, as a diagnostic **without an
@@ -730,8 +764,12 @@ them. Switching decoys off (`canaries.decoysPerRound: 0` in `run.json`) or the t
 ## 11. Merging a change of the catalogs or templates while runs are live
 
 A run freezes a hash of `catalog/*.json` (and of the reviewer templates) at setup. After a merge that
-changes any of them, `step`, `audit`, `report` and `todo` of a run started before the merge stop with
-`INTEGRITY FAILURE FROZEN_MISMATCH` (exit 3) and the run cannot continue. So: do not merge into, or
+changes any of them, `step`, `owner`, `done` and `todo` of a run started before the merge stop with
+`INTEGRITY FAILURE FROZEN_MISMATCH` (exit 3) and the run cannot continue. `audit` and `report` still work on
+such a run (a finished one, to rebuild its report): they check everything else and say in plain Russian that
+another program version rebuilt the report and which comparison (the word lists) could not be made. That is
+«пройдена не полностью», not a failure; a changed word list under the same program version, or any change in
+the run's own frozen files, still fails. So: do not merge into, or
 switch, the checkout that live runs call until every such run has finished; otherwise accept that they
 start again as new runs under the new catalogs (and the owner approves the templates again). Say this in
 the merge notes. Editing only the `description` of a catalog file counts as a change too.

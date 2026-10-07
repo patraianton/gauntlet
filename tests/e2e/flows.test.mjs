@@ -153,14 +153,18 @@ test('give-up: a missing reviewer answer is reprinted; --give-up counts it as an
   await withEnv(async (env) => {
     const r = await readyRun(env);
     const spawn = await stepUntil(r.runDir, isReviewerSpawn);
-    const lost = spawn.payload.jobs.find((j) => j.role === 'reviewer' && /conversion/.test(j.label));
+    // The planter does not guard every lens, and only a guarded lens is re-run: lose the answer of a guarded one.
+    const guarded = readJsonFile(path.join(roundDir(r.runDir, 1), 'round.json')).guarded || [];
+    const reviewers = spawn.payload.jobs.filter((j) => j.role === 'reviewer' && guarded.some((id) => j.label.includes(id)));
+    const lost = reviewers.find((j) => /conversion/.test(j.label)) || reviewers[0];
+    const lostLens = guarded.find((id) => lost.label.includes(id));
     answerJobs(spawn.payload.jobs, { runDir: r.runDir, script: loadScript(), skip: (rec) => rec.job === lost.job });
     const again = await cli(['step', r.runDir]);
     assert.equal(again.exitCode, 10);
     assert.deepEqual(again.payload.jobs.map((j) => j.job), [lost.job]);
     const gave = await cli(['step', r.runDir, '--give-up', 'missing']);
     assert.equal(gave.exitCode, 10, gave.text);
-    assert.ok(gave.payload.jobs.some((j) => j.role === 'reviewer' && /conversion/.test(j.label)), 'the lens is re-run');
+    assert.ok(gave.payload.jobs.some((j) => j.role === 'reviewer' && j.label.includes(lostLens)), 'the lens is re-run');
     const ing = readJsonFile(path.join(roundDir(r.runDir, 1), 'ingest', `${lost.job}.json`));
     assert.deepEqual(ing.reasons, ['given-up']);
     assert.ok(ledgerOf(r.runDir).some((l) => l.type === 'job-given-up' && l.data.job === lost.job));

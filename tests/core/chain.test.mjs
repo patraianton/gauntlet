@@ -109,7 +109,7 @@ test('payloads that do not survive JSON are refused', (t) => {
 
 test('every ledger line validates against ledger-event.schema.json', (t) => {
   const f = fresh(t);
-  const line = appendChained(f, { type: 'init', runId: '20261006-0930-a1b2c3', round: null, data: {} });
+  const line = appendChained(f, { type: 'init', runId: '20260115-0930-a1b2c3', round: null, data: {} });
   const r = validate(loadSchema('ledger-event'), line);
   assert.deepEqual(r.errors, []);
 });

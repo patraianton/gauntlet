@@ -40,7 +40,7 @@ tamper-proof (honesty limit 9).
 | Lesson from practice | Mechanism |
 |---|---|
 | The executor planted the canaries and knew the key (r8 caught 25/25 — the planter knew the checklists); a bench key reused every round |  Slots chosen by the script; a separate planter that never sees lenses or checklists; a separate validator; code applies the edits; the key is sealed and committed by hash before reviewers start; a fixed (bench) key needs the owner's words and a key file in the repository's `bench/` folder, is never declared done, and every ledger row of it is contaminated |
-| Canary findings polluted the counts of real problems | Code removes findings matched to a canary from the real-issue pipeline (unless the matcher marks them `alsoReal`) |
+| Canary findings polluted the counts of real problems | Code removes findings matched to a canary from the real-issue pipeline (unless the matcher marks them `alsoReal` on the very pair that matched them), and cross-checks every finding against the planted text itself, so a planted error the matcher missed cannot become a real problem (bug 11, SPEC 14.6a) |
 | Checklists were edited after the canaries were planted | Lenses are frozen at setup, before any canary exists |
 | Raw answers were lost (r9–r10 kept only per-lens summaries; r8 caught 25/25, so its matrix is known) | Answers are copied write-once into the run folder and their hashes are logged |
 | The instrument drifted between runs, so numbers were not comparable | `instrumentId` (hash of the reviewer template and the severity text) on every ledger row, with the lens set as a sub-group (`lensSetId`): runs with the same templates pool into one series |

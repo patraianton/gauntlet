@@ -31,13 +31,13 @@
       "ok": true, "exitCode": 30, "command": "step", "state": "STOPPED",
       "payload": {
         "decision": "STOP_PLATEAU",
-        "reportPath": "C:\\Users\\user\\work-copies\\demo\\gauntlet-runs\\20261006-0930-a1b2c3\\REPORT.ru.md",
+        "reportPath": "C:\\Users\\user\\work-copies\\demo\\gauntlet-runs\\20260115-0930-a1b2c3\\REPORT.ru.md",
         "summaryRu": [
           "Итог: остановлено — два круга подряд существенных проблем не стало меньше.",
           "Открытых подтверждённых проблем: блокеров 0, существенных 2.",
           "Лучшая версия — круг 2.",
           "Проверка внимания: пройдена.",
-          "Отчёт: C:\\Users\\user\\work-copies\\demo\\gauntlet-runs\\20261006-0930-a1b2c3\\REPORT.ru.md"
+          "Отчёт: C:\\Users\\user\\work-copies\\demo\\gauntlet-runs\\20260115-0930-a1b2c3\\REPORT.ru.md"
         ]
       }
     }

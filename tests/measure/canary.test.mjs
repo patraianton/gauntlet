@@ -191,7 +191,7 @@ test('key: commitment = hashJson(key); reveal checks it, deletes on success, kee
     const dp = dataPaths(home);
     const slots = [{ slot: 'S1', purpose: 'attention', targetLens: 'facts', type: 'FACT-NUM', band: 'end', severityFloor: 'major' }];
     const applied = [{ slot: 'S1', alt: 1, file: 'content/plan.json', locator: 'total', before: '10 190', after: '10 290', description: 'sum', howProvable: 'add', intendedSeverity: 'blocker', positionFraction: 0.9 }];
-    const key = buildKey({ runId: '20261006-0930-a1b2c3', round: 1, seedHex: 'ab'.repeat(16), applied, slots, validator: { verdicts: [{ slot: 'S1', alt: 1, severity: 'major' }] } });
+    const key = buildKey({ runId: '20260115-0930-a1b2c3', round: 1, seedHex: 'ab'.repeat(16), applied, slots, validator: { verdicts: [{ slot: 'S1', alt: 1, severity: 'major' }] } });
     assert.equal(key.canaries[0].canary, 'C1');
     assert.equal(key.canaries[0].validatorSeverity, 'major');
     assert.equal(key.canaries[0].band, 'end');

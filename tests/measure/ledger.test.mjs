@@ -20,7 +20,7 @@ const LENSES = [
   { id: 'language', title: 'Language' },
   { id: 'conversion', title: 'Path to the request' },
 ];
-const RUN = { runId: '20261006-0930-a1b2c3', project: 'demo', artifactType: 'marketing-plan', models: { optIn: [] } };
+const RUN = { runId: '20260115-0930-a1b2c3', project: 'demo', artifactType: 'marketing-plan', models: { optIn: [] } };
 
 /** A round with 3 attention canaries (one per lens) + 1 omission measurement canary. */
 function roundData(round, ownCaught) {

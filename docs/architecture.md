@@ -103,7 +103,7 @@ the state is `READY`.
 Round start (11.2): budget pre-check (`STOP_LIMIT` before spending); pending owner stop; "material
 unchanged since FIX" refusal (unless `--same-material`); round kind (`confirm` only if a candidate
 exists and the live version hash equals it); snapshot; folder links, file coverage, primary sources
-and mechanical checks (`BLOCKED_PRECHECK`; a blocked attempt keeps its folder number but is not a round and is counted nowhere); review
+and mechanical checks (`BLOCKED_PRECHECK`; a blocked attempt keeps its folder number but is not a round and is counted nowhere; the owner reads the real round number with the folder in brackets, `lib/core/roundnum.mjs`); review
 copy with strip rules, author-notes banner, optional rebuild and trace scan (`BLOCKED_TRACE`); slot
 plan (in the sealed stage); planter job.
 
@@ -162,7 +162,9 @@ The key is written to `<dataHome>/sealed/<runId>/<round>.key.json` and its hash 
 answer of the wave is ingested and hashed; the reveal checks the hash. Matching is two-stage: code
 decides clear pairs, a matcher agent judges the rest. Outcomes per (canary × reviewer job): `caught`,
 `seen_underclassified` (matched below the floor), `missed`. Matched findings leave the real-issue
-pipeline unless the matcher marks them `alsoReal`. Details: [measurement.md](measurement.md).
+pipeline unless the matcher marks them `alsoReal` on the very pair that matched them; after the matcher, code checks every
+finding against the planted text once more (a quote on the planted words is a catch whatever the matcher said, SPEC 14.6a).
+Details: [measurement.md](measurement.md).
 
 ### Large data files
 

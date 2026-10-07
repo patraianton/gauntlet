@@ -9,7 +9,7 @@ import { IntegrityError, UsageError } from '../../lib/core/errors.mjs';
 import { writeJsonAtomic } from '../../lib/core/fsx.mjs';
 import { tempDir, rmTemp } from './_helpers.mjs';
 
-function setup(t, runId = '20261006-0930-a1b2c3') {
+function setup(t, runId = '20260115-0930-a1b2c3') {
   const root = tempDir('runstore');
   t.after(() => rmTemp(root));
   const dp = dataPaths(path.join(root, 'data'));
@@ -85,8 +85,8 @@ test('a consistently rewritten ledger -> TAMPER (anchor mismatch)', (t) => {
   recordEvent(runDir, 'gate', { decision: 'FIX' }, 1, { dataPaths: dp });
   const p = runPaths(runDir);
   fs.writeFileSync(p.ledger, '');
-  appendChained(p.ledger, { type: 'init', runId: '20261006-0930-a1b2c3', round: null, data: {} });
-  appendChained(p.ledger, { type: 'gate', runId: '20261006-0930-a1b2c3', round: 1, data: { decision: 'DONE' } });
+  appendChained(p.ledger, { type: 'init', runId: '20260115-0930-a1b2c3', round: null, data: {} });
+  appendChained(p.ledger, { type: 'gate', runId: '20260115-0930-a1b2c3', round: 1, data: { decision: 'DONE' } });
   assert.equal(verifyChained(p.ledger).ok, true);
   assert.throws(() => verifyRunIntegrity(runDir, { dataPaths: dp }), (e) => e instanceof IntegrityError && e.code === 'TAMPER');
 });
@@ -97,11 +97,11 @@ test('a deleted ledger with anchors, or a ledger with no anchors -> TAMPER', (t)
   const p = runPaths(runDir);
   fs.unlinkSync(p.ledger);
   assert.throws(() => verifyRunIntegrity(runDir, { dataPaths: dp }), IntegrityError);
-  const other = setup(t, '20261006-0931-bbbbbb');
+  const other = setup(t, '20260115-0931-bbbbbb');
   appendChained(runPaths(other.runDir).ledger, { type: 'init', runId: other.runId, round: null, data: {} });
   assert.throws(() => verifyRunIntegrity(other.runDir, { dataPaths: other.dp }), IntegrityError);
   // a brand-new run (no ledger, no anchors) is fine
-  const blank = setup(t, '20261006-0932-cccccc');
+  const blank = setup(t, '20260115-0932-cccccc');
   assert.deepEqual(verifyRunIntegrity(blank.runDir, { dataPaths: blank.dp }), { ok: true, count: 0, head: null });
 });
 

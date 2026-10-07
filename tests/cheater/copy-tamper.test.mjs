@@ -131,7 +131,7 @@ test('copy edited during review: the record names the files (added, changed, rem
     assert.match(todo, /Пока проверяющие работали, в копию для проверки что-то записали/);
     assert.match(todo, /Что изменилось в копии: новых файлов — 1, изменённых — 1, пропавших — 1\./);
     assert.match(todo, /новый файл: `content\/extract-prices\.json`; размер 22 байта; записан \d{4}-\d\d-\d\d \d\d:\d\d:\d\d; в это время работали: проверяющий «/);
-    assert.match(todo, /изменён файл: `content\/page\.md`; размер был \d+ байт[а]?, стал \d+ байт[а]?/);
+    assert.match(todo, /изменён файл: `content\/page\.md`; размер был \d+ байт(?:а|ов)?, стал \d+ байт(?:а|ов)?;/);
     assert.ok(todo.includes('пропал файл: `content/' + gone + '`; размер был '));
     assert.ok(todo.includes('время записи неизвестно'));
 

@@ -228,11 +228,13 @@ test('r2-f21: an invalid attempt that caught its canary + a valid attempt that m
     const r = await readyRun(env);
     const spawn = await stepUntil(r.runDir, isReviewerSpawn);
     let victim = null;
+    // Only a lens that has an attention check this round is re-run when it fails: the planter does not guard every lens.
+    const guarded = readJsonFile(path.join(roundDir(r.runDir, 1), 'round.json')).guarded || [];
     answerJobs(spawn.payload.jobs, {
       runDir: r.runDir,
       script: loadScript(),
       mutate: (rec, ans) => {
-        if (victim || rec.role !== 'reviewer' || rec.lens === 'generalist') return ans;
+        if (victim || rec.role !== 'reviewer' || rec.lens === 'generalist' || !guarded.includes(rec.lens)) return ans;
         victim = rec;
         return { ...ans, inspected: (ans.inspected || []).map((x) => ({ ...x, done: false, how: 'no time, skipped it' })) };
       },

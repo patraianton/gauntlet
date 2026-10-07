@@ -68,8 +68,8 @@ test('components', () => {
 test('assertAllowedRunDir: only strictly inside a run root (default <home>/work-copies), unless GAUNTLET_TEST=1', () => {
   const env = {};
   assert.equal(
-    assertAllowedRunDir('C:/Users/user/work-copies/demo-project/gauntlet-runs/20261006-0930-a1b2c3', { ...W, env }),
-    'C:\\Users\\user\\work-copies\\demo-project\\gauntlet-runs\\20261006-0930-a1b2c3',
+    assertAllowedRunDir('C:/Users/user/work-copies/demo-project/gauntlet-runs/20260115-0930-a1b2c3', { ...W, env }),
+    'C:\\Users\\user\\work-copies\\demo-project\\gauntlet-runs\\20260115-0930-a1b2c3',
   );
   assert.ok(assertAllowedRunDir('/c/Users/user/WORK-COPIES/x/gauntlet-runs/r', { ...W, env }), 'case-insensitive on windows');
   assert.ok(assertAllowedRunDir('~/work-copies/demo-project/gauntlet-runs/r', { ...M, env }));

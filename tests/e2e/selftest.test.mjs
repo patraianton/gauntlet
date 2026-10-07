@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { runScenario } from '../../lib/selftest/scenarios.mjs';
+import { runScenario, cutProgramPath } from '../../lib/selftest/scenarios.mjs';
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 
@@ -35,4 +35,13 @@ test('CLI child process: --json prints exactly one envelope; exit codes map', ()
   } finally {
     fs.rmSync(data, { recursive: true, force: true });
   }
+});
+
+test('cutProgramPath cuts the path of the program in every spelling (D6)', () => {
+  const dir = 'C:\\Users\\jdoe\\x-canary\\integration';
+  assert.equal(cutProgramPath('node C:\\Users\\jdoe\\x-canary\\integration\\bin\\p.mjs fix', dir), 'node <program>\\bin\\p.mjs fix');
+  assert.equal(cutProgramPath('node c:/users/JDOE/x-canary/integration/bin/p.mjs', dir), 'node <program>/bin/p.mjs');
+  assert.equal(cutProgramPath('"C:\\\\Users\\\\jdoe\\\\x-canary\\\\integration\\\\bin"', dir), '"<program>\\\\bin"');
+  assert.equal(cutProgramPath('x-canary stays when it is not the program path', dir), 'x-canary stays when it is not the program path');
+  assert.equal(cutProgramPath('/home/a/b/c/x', '/home/a/b'), '<program>/c/x');
 });

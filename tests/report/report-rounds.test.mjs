@@ -130,7 +130,7 @@ test('blocked attempts are not rounds: no counts in section 11, a separate count
     // the three held rounds keep their own numbers and counts
     assert.match(md, /- Круг 3 \(рабочий\): открытых серьёзных проблем — блокеров 1, существенных 2/);
     assert.match(md, /Кругов проведено: 3 /);
-    assert.match(md, /Попыток круга, не дошедших до проверяющих: 2 \(номера папок: 4, 5\); в число кругов они не входят\./);
+    assert.match(md, /Попыток круга, не дошедших до проверяющих: 2 \(номера папок: 04, 05\); в число кругов они не входят\./);
     assert.deepEqual(lintReportText(md), []);
     const lines = summaryLines(s.runDir);
     // the open counts come from the last held round, not from the empty gate of a blocked attempt
@@ -234,5 +234,34 @@ test('honesty: added words, a missing copy, another text and an unrestorable cal
     } finally {
       s.done();
     }
+  }
+});
+
+test('the places where code and the matcher disagreed about planted errors are named in plain Russian under their round, and pass the report lint', () => {
+  const s = setup('plateau');
+  try {
+    const R = runPaths(s.runDir).roundDir(2);
+    const round = readJson(R.roundJson);
+    round.crossCheck = {
+      hits: [{ wave: 1, canary: 'C1', lens: 'generalist', id: 'd2by8vr8#5', severity: 'major', matcher: 'low', matcherScore: 1, rowBefore: 'missed', rowAfter: 'caught' }],
+      keptReal: [{ wave: 1, canary: 'C2', lens: 'language', id: 'wktwg7e6#1', matcherScore: 2 }],
+      alsoRealIgnored: [
+        { wave: 1, canary: 'C6', id: 'd2by8vr8#3', matcherScore: 1 },
+        { wave: 1, canary: 'C6', id: 'd2by8vr8#1', matcherScore: 1 },
+        { wave: 2, canary: 'C7', id: 'd2by8vr8#3', matcherScore: 2 },
+      ],
+    };
+    writeJson(R.roundJson, round);
+    const md = buildReport(s.runDir, { dataPaths: s.dp });
+    assert.match(md, /Замечаний, где проверяющий процитировал именно подложенное место, а помощник, сопоставляющий замечания с подложенными ошибками, их не признал: 1\. Они засчитаны как найденные подложенные ошибки и в список проблем не попали: `d2by8vr8#5 \(ошибка C1\)`\./);
+    assert.match(md, /разошлись в оценке замечаний: 1\..*Они оставлены среди настоящих проблем, как решил помощник: `wktwg7e6#1 \(ошибка C2\)`\./);
+    assert.match(md, /засчитаны как найденные подложенные ошибки: 2\. Отметка не принята, в список проблем они не попали: `d2by8vr8#3`, `d2by8vr8#1`\./);
+    const at = md.indexOf('Программа сама сверила замечания');
+    assert.ok(at > md.indexOf('Круг 2'), 'the lines sit under their round');
+    assert.deepEqual(lintReportText(md), []);
+    // a round without a disagreement prints none of it
+    assert.equal((md.match(/Программа сама сверила замечания/g) || []).length, 1);
+  } finally {
+    s.done();
   }
 });

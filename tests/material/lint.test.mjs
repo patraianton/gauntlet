@@ -54,7 +54,7 @@ test('trace catalog contains at least the patterns SPEC 15.5 lists', () => {
   const must = [
     'оценки проверяющих', 'average score', 'средний балл', '8,7/10', '9.5', 'round 3', 'круг 3', 'раунд',
     'reviewers', 'проверяющие', 'panel', 'панель', 'canary', 'подложенные', 'исправлено', 'fixed in round 2',
-    'версия 3', 'version 3 of', 'deliberate', 'намеренно', 'verified by the panel', 'FEEDBACK',
+    'версия 3 плана', 'version 3 of the plan', 'deliberate', 'намеренно', 'verified by the panel', 'FEEDBACK',
   ];
   for (const s of must) assert.ok(scanString(s, pats, [], ['both', 'content']).length > 0, `trace scan must catch "${s}"`);
 });
@@ -259,4 +259,112 @@ test('the trace scan reads files by content: unknown extensions, no extension, U
   for (const f of ['b.jsonl', 'FEEDBACK', 'c.md.bak', 'd.vtt', 'x.ipynb', 'z.weird', 'e.md', 'f.txt']) assert.ok(files.has(f), f);
   assert.ok(!files.has('img.bin'), 'genuinely binary files are skipped');
   assert.equal(decodeForScan(Buffer.from([0, 1, 2, 0xff])), null);
+});
+
+// BUG 15 (a real night run): «Версия 1 / Версия 2» are the stages of a Shopify integration in a
+// product description. The trace filter must keep the history of the reviewed work out, not product numbering.
+const VERSION_IDS = (s, scopes = ['both', 'content']) => scanString(s, loadPatterns('trace'), [], scopes).map((h) => h.patternId).filter((id) => id.startsWith('T-VERSION'));
+
+test('product numbering of versions is not a review trace (bug 15)', () => {
+  const productProse = [
+    'Версия 1 — один тег в Google Tag Manager или вставка в тему. Версия 2 — приложение Shopify с блоком темы, ставится без программиста.', // the sentence of the real run
+    'Версия 1: подключение',
+    'Версия 2: приложение',
+    'версия 2 приложения для Shopify',
+    'API версии 3 поддерживает пакетную загрузку',
+    'Shopify версии 2 выпущен в 2025 году',
+    'Версия 2 работает через API магазина',
+    'версия 2 текстовый редактор для описаний',
+    'В версии 3 появился экспорт в CSV',
+    'в версии 2 добавлено приложение для темы',
+    'Версия 1 / Версия 2 / Версия 3',
+    'Версия №2 доступна на сайте',
+    'версия плана',
+    'The Shopify app, version 2 of the Shopify API, supports bulk upload.',
+    'version 3 of our app ships in May',
+    'version 2 of the checkout extension',
+    'the latest version of the plan',
+    'a preview version of the theme',
+    'an HDMI v2 cable and a v3 hub',
+    'версия 3 работы блока на мобильных', // «работа» = how it works, not the reviewed work
+    'Версия 1 описание подключения',
+    'Это версия 3 нашего приложения',
+    'Version 1 - fixed price, Version 2 - usage based',
+    'available since version 2',
+  ];
+  for (const s of productProse) assert.deepEqual(VERSION_IDS(s), [], `not a trace: "${s}"`);
+});
+
+test('the history of the reviewed work itself is still a review trace (bug 15)', () => {
+  const history = [
+    ['версия 2 документа', 'T-VERSION-RU'],
+    ['Версия 3 плана', 'T-VERSION-RU'],
+    ['версия 2 отчёта', 'T-VERSION-RU'],
+    ['версия 2 отчета', 'T-VERSION-RU'],
+    ['версией 3 черновика', 'T-VERSION-RU'],
+    ['версия документа №2', 'T-VERSION-RU'],
+    ['в версии 3 исправлено', 'T-VERSION-FIXED-RU'],
+    ['В версии 3 учтено замечание про цену', 'T-VERSION-FIXED-RU'],
+    ['во версии 2: устранены повторы', 'T-VERSION-FIXED-RU'],
+    ['<p>Версия 7. Собрано 05.10.2026.</p>', 'T-VERSION-STAMP-RU'],
+    ['по сравнению с версией 2', 'T-VERSION-COMPARE-RU'],
+    ['В сравнении с версией №1 текст короче', 'T-VERSION-COMPARE-RU'],
+    ['относительно версии 3', 'T-VERSION-COMPARE-RU'],
+    ['предыдущая версия', 'T-VERSION-PREV-RU'],
+    ['в предыдущей версии были ошибки', 'T-VERSION-PREV-RU'],
+    ['v2 → v3', 'T-VERSION-ARROW'],
+    ['V1 -> V2', 'T-VERSION-ARROW'],
+    ['v1.2 => v1.3', 'T-VERSION-ARROW'],
+    ['version 3 of the plan', 'T-VERSION-OF-EN'],
+    ['Version 2 of this document', 'T-VERSION-OF-EN'],
+    ['version 4 of the report', 'T-VERSION-OF-EN'],
+    ['compared to version 2', 'T-VERSION-COMPARE-EN'],
+    ['the previous version', 'T-VERSION-PREV-EN'],
+    ['fixed in version 3', 'T-FIXED-IN-EN'],
+    // wider history marks (review of 07.10, finding A2 / R3)
+    ['Версия 3 (после замечаний)', 'T-VERSION-REVIEW-RU'],
+    ['Версия 4 (учтены замечания проверки)', 'T-VERSION-REVIEW-RU'],
+    ['Версия 2 — учтены замечания', 'T-VERSION-REVIEW-RU'],
+    ['Версия 3 — доработана', 'T-VERSION-REVIEW-RU'],
+    ['версия 2.1 — после проверки', 'T-VERSION-REVIEW-RU'],
+    ['Что изменилось с версии 2', 'T-VERSION-FROM-RU'],
+    ['изменения с версии 2', 'T-VERSION-FROM-RU'],
+    ['в отличие от версии 2', 'T-VERSION-FROM-RU'],
+    ['версия 2 → версия 3', 'T-VERSION-ARROW-WORD'],
+    ['version 2 -> version 3', 'T-VERSION-ARROW-WORD'],
+    ['версия 3 этого плана', 'T-VERSION-RU'],
+    ['документ версии 3', 'T-VERSION-NOUN-FIRST-RU'],
+    ['Обновлено в версии 4', 'T-VERSION-DONE-IN-RU'],
+    ['в версии 3 добавлен раздел', 'T-VERSION-STRUCTURE-RU'],
+    ['Это версия 3.', 'T-VERSION-THIS-RU'],
+    ['<p>Это версия 3.</p>', 'T-VERSION-THIS-RU'],
+    ['Version 3 (after review)', 'T-VERSION-REVIEW-EN'],
+    ['Version 3 — fixed typos', 'T-VERSION-REVIEW-EN'],
+    ['changes since version 2', 'T-VERSION-SINCE-EN'],
+    ['in contrast to version 2', 'T-VERSION-SINCE-EN'],
+  ];
+  for (const [s, id] of history) {
+    const all = scanString(s, loadPatterns('trace'), [], ['both', 'content']).map((h) => h.patternId);
+    assert.ok(all.includes(id), `"${s}" must hit ${id}, got ${all.join(',') || 'nothing'}`);
+  }
+});
+
+test('the real sentence of that run passes the trace scan unchanged, and an excuse still works for a phrase that is caught (bug 15)', (t) => {
+  const dir = tmpDir(t);
+  put(dir, 'content/PRODUCT.md', '# Продукт\n\n| Установка | Версия 1 — один тег в Google Tag Manager или вставка в тему. Версия 2 — приложение Shopify с блоком темы, ставится без программиста |\n');
+  assert.deepEqual(scanTrace(dir, loadPatterns('trace'), []), []);
+
+  // a product phrase that is still caught: the excuse path (traceAllow, a literal phrase) removes exactly it
+  put(dir, 'content/tariffs.md', 'Тариф Pro включает версия 3 плана подписки без ограничений.\nВ версии 3 исправлено всё, что просили.\n');
+  const pats = loadPatterns('trace');
+  const hits = scanTrace(dir, pats, []);
+  assert.ok(hits.some((h) => h.file === 'content/tariffs.md' && h.line === 1 && h.patternId === 'T-VERSION-RU'));
+  assert.ok(hits.some((h) => h.file === 'content/tariffs.md' && h.line === 2));
+  const allow = [{ phrase: 'версия 3 плана подписки', why: 'название тарифа продукта' }];
+  assert.deepEqual(allowProblems(allow[0]), []);
+  const after = scanTrace(dir, pats, allow);
+  assert.ok(!after.some((h) => h.file === 'content/tariffs.md' && h.line === 1), 'the allowed product phrase passes');
+  assert.ok(after.some((h) => h.file === 'content/tariffs.md' && h.line === 2), 'the real history on the next line stays');
+  // an excuse for text no pattern catches any more is refused as not needed (it would only widen what is let through)
+  assert.ok(allowProblems({ phrase: 'Версия 1 — один тег', why: 'x' }).some((p) => /covers no review-trace word/.test(p)));
 });

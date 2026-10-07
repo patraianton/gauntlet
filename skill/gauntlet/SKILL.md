@@ -26,6 +26,9 @@ below as `PL <command>`. Repository docs: `{{GAUNTLET_REPO}}/README.md`, runbook
   an English version is welcome as a contribution.) What you tell the owner about the result comes only
   from `PL report <run> --summary` (5 lines) and `REPORT.ru.md`. Show those lines as printed, plus
   the report path. Do not invent numbers, do not add a score, never write «панель поставила X».
+  Round numbers are the real ones (only rounds that reached the reviewers; the run folder in brackets
+  where it differs, «круг 3 (папка 04)»). Say them exactly so; never turn a folder number into a round
+  number, and never call a blocked attempt a round.
 - **Working copies** stay under a run root: by default `~/work-copies/<project>/`; the allowed roots are
   listed in the env var `GAUNTLET_RUN_ROOTS` (see the runbook). Review copies are deleted by the CLI at round close; run `PL cleanup <run>`
   after the report.
@@ -136,7 +139,7 @@ Unless the owner already said it in this conversation, ask once:
   (`PL step "<run>" --owner-quote "<the owner's words>" --question "<what you asked>"`); it also refuses any trace left in the copy. Legitimate
   product phrases that look like traces go to `traceAllow` as literal phrases
   (`{ "phrase": "solar panel kits", "why": "..." }`, no regex, one trace word plus real product words);
-  each phrase needs the owner's words: show the owner the phrase and record `--owner-quote` and `--question`. Never rewrite
+  each phrase needs the owner's words: show the owner the phrase and record `--owner-quote` and `--question`. A phrase that covers no trace word any more is refused: delete it (no owner words needed) and do not copy `strip.json` from an older run, start with `"traceAllow": []`. Never rewrite
   material values to get past the scan (it only catches accidental traces, a split word fools it):
   ask the owner instead. Fix and re-run
   `step` as often as needed before freeze.
@@ -146,6 +149,11 @@ Unless the owner already said it in this conversation, ask once:
   is refused. Stricter limits need nothing.
 - `mechanical.json` - cheap checks run before any agent: `json-valid`, `count`, `file-exists`,
   `no-forbidden-text`, `command`. A failing blocker/major check stops the round before it costs tokens.
+  Each kind has its own fields: `file-exists` takes `path` (one exact file, `<root name>/<file>`), not `glob`;
+  `count` takes `glob` + `value`; `no-forbidden-text` takes `patterns`; `command` takes `cmd`. The first `step`
+  checks every check before freeze (field of another kind, bad regex, program outside the allowlist, path or
+  glob that matches nothing in the material) and prints `K1: ... Fix: ...` lines: correct your own file and
+  `step` again, no need to ask the owner.
 - Author notes (`--notes`, `material.authorNotes`) get a code-added banner "unverified claims".
   Do not write a facts file for reviewers; give them sources.
 - File formats: `{{GAUNTLET_REPO}}/docs/SPEC.md` section 9.4-9.5.
@@ -194,6 +202,10 @@ exit 3.
 
 1. `PL report "<run>" --summary` -> show the owner exactly the printed lines (five, plus a line for each
    caveat) and the path of `REPORT.ru.md`. Nothing else about quality, no score of your own.
+   The audit line is printed in one of four forms (пройдена / «пройдена не полностью» with the lines that
+   say what could not be compared / НЕ пройдена / ещё не запускалась): show it as printed and never
+   shorten it to «passed» or «failed». When the owner said stop after the program had already stopped
+   the run, the first line names both stops, in order; do not rewrite it.
 2. Wait for the owner's words. Record decisions only with the owner's exact words, and every time with
    `--question "<the exact question you asked>"` (the CLI refuses a decision without it). Whether the owner
    answers in a few words («да», «стоп», «продолжай») or in a long message, record the owner's answer exactly

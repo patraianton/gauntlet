@@ -87,12 +87,12 @@ test('rand.mjs uses node:crypto and never Math.random', () => {
 
 test('clock: ISO with offset; test clock can be set and reset', () => {
   assert.match(now(), /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$/);
-  const fixed = new Date(2026, 9, 6, 9, 30, 5, 7); // local time
+  const fixed = new Date(2026, 0, 15, 9, 30, 5, 7); // local time
   setClockForTests(() => fixed);
   try {
-    assert.ok(now().startsWith('2026-10-06T09:30:05.007'));
-    assert.equal(runStamp(), '20261006-0930');
-    assert.equal(localDate(), '2026-10-06');
+    assert.ok(now().startsWith('2026-01-15T09:30:05.007'));
+    assert.equal(runStamp(), '20260115-0930');
+    assert.equal(localDate(), '2026-01-15');
     assert.equal(new Date(now()).getTime(), fixed.getTime(), 'the offset is correct');
   } finally {
     setClockForTests(null);
@@ -118,8 +118,8 @@ test('dataPaths layout and safe ids', () => {
   const dp = dataPaths(path.join('C:', 'x', 'data'));
   assert.equal(path.basename(dp.anchors), 'anchors.jsonl');
   assert.equal(path.basename(dp.runsIndex), 'runs-index.jsonl');
-  assert.equal(path.basename(path.dirname(dp.sealedDir('20261006-0930-a1b2c3'))), 'sealed');
-  assert.equal(path.basename(dp.sealedKey('20261006-0930-a1b2c3', 2)), '2.key.json');
+  assert.equal(path.basename(path.dirname(dp.sealedDir('20260115-0930-a1b2c3'))), 'sealed');
+  assert.equal(path.basename(dp.sealedKey('20260115-0930-a1b2c3', 2)), '2.key.json');
   assert.deepEqual(Object.keys(dp.measurements).sort(), ['canaries', 'controls', 'decoys', 'detections', 'escapes', 'runs', 'verdicts']);
   assert.equal(path.basename(dp.measurements.detections), 'detections.jsonl');
   assert.equal(path.basename(dp.statsMd), 'STATS.md');

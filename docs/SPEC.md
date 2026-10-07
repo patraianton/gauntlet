@@ -75,7 +75,7 @@ Claude homes except by the hand-run install script.
 | Term | Meaning |
 |---|---|
 | run | One attempt to bring one artifact to "done". Has a run folder and a hash-chained run ledger. |
-| round | One full panel pass over one version of the material. Kinds: `working`, `confirm`. |
+| round | One full panel pass over one version of the material. Kinds: `working`, `confirm`. Only a pass that reached the reviewers is a round (the real round number 1, 2, 3 ... counts those only); the run folder `rounds/NN` is taken by every attempt, including a blocked one that never reached the reviewers (section 11.2: the owner reads the real number, the folder in brackets). |
 | material | The artifact files under the configured roots (include/exclude globs). |
 | version hash | Tree hash of the material at round start (section 9.3). |
 | snapshot | Byte copy of the material taken at round start, kept in the run folder. |
@@ -250,7 +250,7 @@ gauntlet/
       errors.mjs fsx.mjs paths.mjs hash.mjs canon.mjs rand.mjs clock.mjs schema.mjs glob.mjs
       chain.mjs datahome.mjs runstore.mjs config.mjs proc.mjs sha256-pure.js
     material/                          P2
-      manifest.mjs snapshot.mjs copy.mjs strip.mjs lint.mjs sources.mjs mechanical.mjs
+      manifest.mjs snapshot.mjs copy.mjs strip.mjs lint.mjs sources.mjs mechanical.mjs mechanical-shape.mjs
       receipts.mjs render.mjs jobs.mjs sample.mjs (14.10)
     engine/                            P3
       state.mjs step.mjs setup.mjs round.mjs ingest.mjs cluster.mjs verify.mjs dispute.mjs
@@ -389,7 +389,7 @@ parent holds `gauntlet-runs`, `gauntlet`, `gauntlet-data`, `sealed` or a `*.key.
     strip-preview.json                   what strip and rebuild did to the preview copy (D30)
   rounds/
     01/
-      round.json                         kind, versionHash, copyId, timestamps, seeded?
+      round.json                         kind, versionHash, copyId, timestamps, seeded?, crossCheck? (14.6a)
       precheck.json                      mechanical check results
       snapshot/                          byte copy of the material (kept until cleanup; best/last/done kept)
       source-text/<id>.txt               raw output of every primary source as run at the round start (9.4); evidence for 12.1 step 5 only
@@ -458,7 +458,7 @@ embeds an identical validator (it is copied alone into job folders and cannot im
 ```
 {
   schemaVersion: 1,
-  runId: "20261006-0930-a1b2c3",
+  runId: "20260115-0930-a1b2c3",
   project: "demo-project",                      // project name
   artifactType: "marketing-plan" | "copy" | "slides" | "report" | "code" | "other",
   createdAt: string,
@@ -620,6 +620,30 @@ mechanical.json: { schemaVersion:1, checks: [
     cmd?: string, args?: [string] } ] }                                   // command: exit 0 = pass; stdout lines = details; {snapshot} placeholder
 ```
 Mechanical checks run on the snapshot. `strip` rules run on the copy.
+
+**Shape check of `mechanical.json` (bug 13, `lib/material/mechanical-shape.mjs`).** The JSON schema only
+lists the union of all fields, so `{ kind: "file-exists", glob: ... }` is schema-valid yet can never run
+(night 07.10.2026: such a file was frozen and failed at round 1, `BLOCKED_PRECHECK`, and mending it needed
+the owner's words because a changed check is narrowing). Therefore, at the first `step` in `NEW` (before the
+lens writer is briefed; exit 20 with the list) and at `amend --what mechanical` (exit 4, nothing written),
+code refuses a file with any of: a missing or unknown `kind` (also `type` written instead of `kind`); a field
+required by the kind missing (`file-exists` needs `path`; `count` needs `glob` and a numeric `value`;
+`no-forbidden-text` needs `patterns`; `command` needs `cmd`); a field that belongs to another kind (`glob`
+on `file-exists`, `patterns` on `json-valid`, ...) or a field nobody knows; a bad `op`, `pointer` (must start with
+`/`), a `path` that is absolute, contains `..` or a pattern, a regex in `patterns` that does not compile,
+a `cmd` outside `run.json allowExecutables` or given with a folder; an id used twice; and, judged against
+the files the round snapshot will hold, a `file-exists` path that is not a file there, a `json-valid` or
+`no-forbidden-text` glob that matches no (text) file, a `count` whose glob (or `pointer`) matches nothing
+while a count of 0 cannot satisfy `op value` (a "none of these exist" check with `= 0` or `<= N` is fine).
+Every line starts with the check id and ends with `Fix: ...` (for `file-exists` with `glob` it gives the
+exact `"path": "<the glob>"`). The window fixes its own file; no owner words are needed before freeze. At
+amend a check kept exactly as frozen is not judged against today's material (it fails the round the usual
+way); a check changed or added is. Changing a frozen check is still narrowing and needs the owner's words, with one
+exception: a frozen check that could never run (wrong shape, frozen by an older program) may be replaced by a sound
+check with the same id and the same or a higher severity (`mechanicalNarrowing`); deleting it or lowering its severity
+still needs them. A `file-exists` path must already be a file of the material at the first `step`: a check for a file
+the window will create after freeze cannot be frozen.
+The runtime keeps its own fail-closed messages for a file that bypassed this check.
 
 **Strip preview (D30, `lib/engine/strip-preview.mjs`).** At the first `step` in `NEW` (before the lens
 writer) and at `amend --what strip`, code takes a throw-away snapshot under `setup/preview-<rand>/`,
@@ -788,9 +812,10 @@ commitment = hashJson(key)   // logged as event `canary-commit` before any revie
 ```
 { schemaVersion:1, round, detections: [ { canary, purpose, targetLens, lens, job, attempt,
    outcome: "caught"|"seen_underclassified"|"missed", finding: n|null, stage: "code"|"matcher"|null,
-   matcherScore: n|null, severityGiven: string|null } ] }
+   matcherScore: n|null, severityGiven: string|null, crossCheck?: true } ] }
 ```
-One row per (canary × reviewer job). Lens validity reads the rows where `lens == targetLens`.
+One row per (canary × reviewer job). Lens validity reads the rows where `lens == targetLens`. `crossCheck: true` marks a
+row that the code's own cross-check (14.6a) turned from `missed` (or from a lower outcome) into a catch; its `stage` is `code`.
 
 ### 9.12 `clusters.json` (run level)
 
@@ -915,7 +940,7 @@ and after freeze verifies `FROZEN.json` (exit 3 on mismatch).
 | `task set <run> --from <file> [--cut <list>] [--source <text>] [--owner-quote <text>]` | executor | Section 9.2. Allowed until freeze. |
 | `sources check <run>` | executor | Runs source recipes and prints results (preview; also run by freeze and at each round start). |
 | `step <run> [--answer-hash <job>=<code>,...] [--usage <job>=<tokens>,...] [--usage-delta <n> --driver workflow] [--usage-total <n> [--usage-first] --driver workflow (legacy)] [--give-up <job>,...\|missing] [--same-material] [--no-sources] [--owner-quote <text>]` | executor / driver | The state machine (section 11). Idempotent: running it again in a waiting state reprints the same calls. `--answer-hash`: the code each agent replied after DONE (D29). `--driver workflow` is refused without the recorded opt-in in `run.json`; `--usage-total` is accepted only with `--driver workflow` of this call (Workflow mode is never inferred from `run.json`), and in Agent mode every answered job without a number, or with a number below max(1000, a quarter of the per-job estimate `roundTokenEstimate / (lenses + 4)`), is booked at the estimate and marked «оценено» (r3-f7). `--owner-quote` (state `NEW` only): the owner's words approving strip narrowing (9.5) or a fourth lens-writer brief (D5). |
-| `status <run>` | anyone | State, round, decisions so far, open counts per round, tokens spent/estimated, best round, next action; if `DONE.json` exists and live files differ: `UNREVIEWED CHANGES: <files>`. |
+| `status <run>` | anyone | State, round (real number, folder in brackets where it differs; a blocked attempt is listed as an attempt), decisions so far, open counts per round, tokens spent/estimated, best round, next action; if `DONE.json` exists and live files differ: `UNREVIEWED CHANGES: <files>`. |
 | `todo <run>` | executor | Reprints the latest `todo.md`. |
 | `dispute <run> --cluster <id> --argument <text> (--evidence-cmd <exe> [--evidence-arg <a>]... \| --evidence-quote <rel>::<quote>)` | executor | Records a dispute; runs the evidence command now (allowlisted, 60 s) and stores its output; the argument, the command's arguments and the output are prompt-linted; quote evidence must be found in the live material. Only between rounds. Resolved by two independent dispute verifiers in the next round (12.6). |
 | `waive <run> --cluster <id>[,<id>] --owner-quote <text>` | executor, only on the owner's words | Only in `STOPPED` after the stop report was written (D35). Status `waived`; quote stored; the headline becomes «Готово с вашими исключениями» and the summary carries a line with the count and the owner's first words (D34); section 6 lists every decision. |
@@ -1072,7 +1097,8 @@ code-valid candidates. State `AWAIT_VALIDATOR`, exit 10.
 
 ### 11.6 Clustering and verification
 
-1. Remove canary-matched findings (keep those the matcher marked `alsoReal`).
+1. Remove canary-matched findings: those code or the matcher matched (14.6) and those the code cross-check found on
+   the planted text (14.6a). Keep only a finding the matcher marked `alsoReal` on the very pair that matched it (14.6a).
 2. Cluster the remaining findings of all attempts (12.4), attach them to existing open clusters
    where they overlap, create requirement clusters (12.5), and add carry-over clusters (D5):
    status open/unverified/contested from earlier rounds. Carry-over clusters whose `verifiedOn`
@@ -1122,7 +1148,18 @@ Checks, each listed as pass/fail in `AUDIT.json`:
    answer, attempts, guarded, caught, own planted-error outcome) are rebuilt from the round files and
    must match (r3-f17). The input's clusters are not rebuilt (`clusters.json` is run-level and later
    rounds change it); they rest on the hash guard between commands (D28);
-7. report numbers (open counts, decision, catches, tokens) equal the run files;
+7. report numbers (open counts, decision, catches, tokens) equal the run files. Two ways to run it. A command
+   that rewrites the report right after the audit (`report`, a stop, `done`, `abort`) passes
+   `rebuildingReport`: an older report is by definition older than the events that made the command rebuild
+   it (the owner's `stop` after a limit stop is one), so it is not judged; instead the numbers the command is
+   about to log are compared with the numbers read afresh from the run files, and the same audit result goes
+   into the new report and the summary (bug 12: the report used to be rebuilt with the failed result of the
+   audit that had judged the old report). Any other run (`audit`, `report --summary`) compares the last
+   logged numbers with the files, **unless a state-changing event (round close, stop, owner decision, done)
+   came after that report**: then the report is stale, not wrong, and the audit lists it under
+   «not compared». A report logged with another set of fields (another program version) is compared on
+   the common fields only, the rest is listed under «not compared». The `report` command logs the numbers
+   too, so a later audit has something to compare;
 8. `DONE.json` (if any): live material still hashes to `finalVersionHash`;
 9. reveal order (every first-wave answer was ingested before the key was revealed);
 10. `state.json` equals the last state in the ledger;
@@ -1132,8 +1169,23 @@ Checks, each listed as pass/fail in `AUDIT.json`:
     the round was ingested, and no decoy is a cluster (14.11);
 13. controls: the true controls' commitment was logged before the first verifier of the round was asked, the
     key was revealed after the last verifier answer, equals its commitment, and no control is a cluster (14.12).
+**Comparisons that could not be made** (`notCompared` in the result, in `AUDIT.json`, in the `audit` event, as
+`NOT COMPARED …` lines of the command and as plain-Russian lines of the summary and report section 13): they
+are never failures and never silent. `ok` stays true only when every check that could run passed; the summary
+then says «пройдена не полностью» and names what was left out. The cases: the run was frozen by another
+version of the program and the program's own frozen files (`taxonomy/canary-types.json`, `catalog/*.json`)
+now differ (`frozen`); the report on disk is stale; the logged report has other fields. The first is
+tolerated **only** when FROZEN.json and the running program both name a program version (or git head) and the
+two differ (a copy without a readable git head proves nothing); a list edit committed under a new commit cannot be
+told from an update, and only the «not compared» line shows it. A partial pass exits 0 like a full pass: read
+`notCompared`. In a rebuilt report the report-numbers check reads the same files twice and cannot fail; the
+section 13 proves the chain, frozen files and templates. The
+run's own frozen files (settings, lenses, sources, strip, task, the run's copies of the templates) must
+always match, and the same version with other word lists is an edit, so the audit fails (check `frozen`).
+Only the read-only commands (`audit`, `report`) open a run this way; `step`, `owner`, `done` and the rest
+still refuse with `FROZEN_MISMATCH`.
 Before the checks, opening the run verifies the guard (D28): an engine-written file changed since the
-last command makes the whole audit fail (`chain`). Planter and validator files are looked up in the
+last command makes the whole audit fail (`chain`; a changed frozen file fails as `frozen`). Planter and validator files are looked up in the
 sealed stage while a round is unrevealed.
 `report` embeds the latest audit result; `audit` runs automatically at every stop and at `done`.
 
@@ -1502,7 +1554,49 @@ findings in the same file, go to the matcher (`score >= 3` = same defect).
 
 Outcome per (canary × reviewer job): `caught` if matched and the finding severity ≥ the canary's
 `severityFloor`; `seen_underclassified` if matched below the floor; `missed` otherwise. A finding
-matched to a canary is removed from the real-issue pipeline unless the matcher marks `alsoReal`.
+matched to a canary is removed from the real-issue pipeline unless the matcher marks `alsoReal` **on the very pair that
+matched it** (same canary, same finding, `score >= 3`). An `alsoReal` on any other pair of that finding — another
+canary, or a score below 3 — never keeps a catch among the real problems. Every finding the matcher matched
+(`score >= 3`, without `alsoReal`) is removed, not only the best finding of its (canary × job) cell.
+
+### 14.6a Code cross-check of every finding (bug 11, 07.10.2026)
+
+On 06.10.2026 a planted error ("the calls are signed" instead of "there is no signature, the secret is in the
+address") became a real blocker, went into the report and the window's to-do list, and the window "fixed" the
+work. Two holes let it through: (1) the matcher's `alsoReal` was read as a bare finding id, so a mark on an
+unrelated pair of the same finding (another canary, score 1–2) kept a catch that code had already settled among the
+real problems — this was the cause in the live run, and it hit five catches of one reviewer (C1–C5); (2) a finding
+that quotes the planted text but that the matcher scored below 3 stayed real, because only the matcher decided
+those pairs. Both are closed in code, after the key is open and the matcher has answered (`crossCheck` in `match.mjs`):
+
+- `alsoReal` counts only on the pair that matched the finding (above). Marks that were not taken are listed in the
+  ledger (`alsoRealIgnored`) and in the report.
+- **A code hit.** For every canary that has planted text (not an omission, not visual, not pre-planted) the code finds the
+  changed span of `after` (the characters that differ from `before`) at its one place in the planted copy of the file
+  (the planted passage must occur exactly once). A finding in that file is a **hit** when one of its quotes
+  (`quote`, `quote2`), compared after normalising whitespace, case and quote marks,
+  1. is at least 12 characters long and at most twice the planted passage plus 40 characters (a longer quote is a
+     section, not a place),
+  2. occurs exactly once in the file (a line that also stands elsewhere does not point at a place),
+  3. and covers at least 60 % of the changed characters of that occurrence.
+
+  A quote of the unchanged neighbours — the line above, the line below, the unchanged beginning of the same line, a
+  whole section around it — fails (3) or (1): a genuinely different real finding next to the canary is not swallowed.
+  A quote in another file, a short core of the changed words, or an omission canary is left to the matcher alone.
+- A hit that the matcher did not accept (no pair, or a score below 3) is **a canary hit**: the finding leaves the
+  real-issue pipeline (all such findings of the job, not only the best one); the (canary × job) cell that was `missed`
+  (or lower) becomes a code catch (`stage: "code"`, `crossCheck: true`, severity as the reviewer gave it — recall
+  counts it, `seen_underclassified` when below the floor); the disagreement goes to `round.json` `crossCheck.hits`, to the
+  `match` event (`codeVsMatcher`) and to the report. A dead matcher (no answer) changes nothing here: the code rule applies.
+- **One exception, the conservative side for a real finding.** When the matcher judged this very pair — `score < 3`
+  together with `alsoReal` ("not the planted error, but a real problem on the same line") — the matcher's word stands:
+  the finding stays real, recall is not raised, and the disagreement is recorded (`crossCheck.keptReal`, a report line).
+  Price: a matcher that sets `alsoReal` on a low score for a genuine miss keeps a planted error among the real problems;
+  the report names such findings so that the owner can see them. The opposite price of the rule: a finding that quotes the
+  planted sentence to complain about something else in it, with no `alsoReal` from the matcher, is counted as a catch of
+  the planted error and does not reach the to-do list this round (the same real defect, being in the unplanted original,
+  is found again in later rounds with other planted errors).
+- Planted text still never reaches a reviewer: the comparison happens after reveal, in code, on the planted copy.
 
 ### 14.7 Measurement ledger (data home `measurements/`, all chained)
 
@@ -1775,7 +1869,7 @@ reviewer used, so it looks like any other item, and the verifier's answer shows 
 error, in the key's order, `K1..Kn`: among the findings that were removed because they matched this error, with
 outcome `caught` (reported at or above the planted class), a usable claim and a quote that code found in the copy
 (a finding without a quote needs its `missingWhat` or `seen`), the one settled by code before one settled by the matcher,
-then the higher matcher score. A finding the matcher kept as a real problem (`alsoReal`), a missed pair and an
+then the higher matcher score. A finding the matcher kept as a real problem (`alsoReal` on its own pair), a missed pair and an
 under-classified one are never controls. The **planted class** of a control is the floor of its error (`severityFloor`, else
 the taxonomy default; 14.6): a verifier that confirms it in a lower class has downgraded it.
 No agent is involved; a bench run (`fixedKey`) and `controlsPerRound: 0` use none.
@@ -1950,8 +2044,21 @@ include "until the panel ...", «пока панель ...» and «гоняй п
 - **Trace scan** (copies and paths), `trace-patterns.json`, at least: score tables and score words
   ("оценк[аи] проверяющих", "average score", "средн(ий|яя) балл"), `\b\d{1,2}[.,]\d\s*/\s*10\b`,
   `\b9[.,]5\b`, round words ("round \d", "круг\s*\d", "раунд"), "reviewer(s)", "проверяющ", "panel",
-  "панел[ьи]" (word), "canary", "подлож", "исправлено", "fixed in (round|version)", "версия \d+",
-  "version \d+ of", "deliberate", "намеренно", "verified by the panel", "FEEDBACK". Path scan applies
+  "панел[ьи]" (word), "canary", "подлож", "исправлено", "fixed in (round|version)", the **history of
+  the reviewed work itself** by version ("версия \d+" followed or preceded by a document noun such
+  as план, документ, отчёт, текст, черновик: «версия 3 плана»; a build stamp «Версия 7. Собрано …»;
+  «по сравнению с версией 2»; «в версии 3 исправлено»; «предыдущая версия»; "version \d+ of the
+  <document noun>"; "compared to version \d+"; "previous version"; "v2 → v3"), "deliberate",
+  "намеренно", "verified by the panel", "FEEDBACK". **A number after the word "версия" alone is not a
+  trace** (bug 15, a real night run): «Версия 1 — один тег … Версия 2 — приложение Shopify»,
+  «API версии 3», «версия 2 приложения», "version 2 of the Shopify API" are product numbering and pass.
+  Also caught (review of 07.10): a version number followed by a review note («Версия 3 (после замечаний)»,
+  «Версия 2 — учтены замечания», "Version 3 (after review)", "Version 3 — fixed typos"), a change note against an
+  earlier number («Что изменилось с версии 2», «в отличие от версии 2», «Обновлено в версии 4», "changes since version 2",
+  «версия 2 → версия 3»), «Это версия 3.» alone on a line, and «в версии 3 добавлен раздел»; «версия 3 этого плана» and
+  «документ версии 3» too. Trade-off: a bare «Версия 3» heading and a release-note line «в версии 3 добавлен экспорт»
+  or "version 4 of the checkout" are not caught (see `docs/honesty-limits.md`). A `traceAllow` phrase that covers no
+  trace word is refused; delete it (no owner words needed). Path scan applies
   the same list to every component of a path given to an agent. `strip.traceAllow` removes hits.
   **Data files** (`.csv .tsv .jsonl .ndjson .json`): one BELOW the sampling defaults (1 MiB and
   2 000 rows) is scanned with every pattern, like prose. A LARGE one (over either default; the run's
@@ -1996,7 +2103,10 @@ every round), because sections 8 and 10 use the word.
 
 1. **Итог одной строкой** — chosen by the decision: «Готово: два круга подряд, второй — слепой свежими
    проверяющими, не нашли перепроверенных серьёзных проблем.» / «Не готово: остановлено, потому что …»
-   (plateau, limit, inconclusive, owner stop, edited after review, aborted).
+   (plateau, limit, inconclusive, owner stop, edited after review, aborted). When the owner said stop after
+   the program had already stopped the run, both are told in order: «… потому что сначала кончился лимит
+   (токенов), а потом вы сами тоже сказали остановить проверку» (the first stop is read back from the ledger;
+   `owner --kind stop` keeps it in `stoppedReason` and in the reasons of the gate event).
 2. **Какая версия проверена** — version hash and date; «после проверки файлы не менялись» or the list of
    changed files with «эти правки никто не проверял»; the roots; every primary source with its stated
    origin and recipe; what strip and rebuild removed or changed in the reviewers' copy (D30, D31).
@@ -2022,9 +2132,16 @@ every round), because sections 8 and 10 use the word.
 10. **Оценка (справочно)** — confirm round band only (13.5).
 11. **Как шла работа** — per held round: kind, open serious problems (blockers/majors), decision. A blocked
     attempt (`BLOCKED_*`) is a separate line «Попытка круга (папка rounds\NN) не состоялась: <reason>» with
-    the program's own reasons quoted and **no counts**, plus one sentence saying that round numbers follow
-    the run's folders and a blocked attempt holds a number without being a round; then amendments and owner
-    decisions.
+    the program's own reasons quoted and **no counts**, plus one sentence saying that the round numbers are
+    the real ones (rounds that reached the reviewers) and that the run folder is given in brackets where
+    it differs; then amendments and owner decisions. **Round numbers (bug 14):** every round number the
+    owner reads (summary lines, report, `status`, to-do, CLI lines, the cleanup and restore-best lines)
+    is the REAL number: the position of the round among the rounds that reached a gate that is not
+    `BLOCKED_*` (the very set the round limit, the plateau and the best version use), written «круг 3
+    (папка 04)» / «round 3 (folder 04)» when the folder number differs and plain «круг 3» when it does not.
+    A blocked attempt is «Попытка круга (папка `rounds\NN`)» / «attempt (folder NN)», never a number.
+    One definition: `lib/core/roundnum.mjs`. The ledger, gate files, snapshots, `best.json` and the
+    audit details keep the folder number.
 12. **Цена** — panel tokens (measured / «оценено»); «Кругов проведено: N» (held rounds only) and, when there
     are any, «Попыток круга, не дошедших до проверяющих: M (номера папок: ...)»; time; «режим без Workflow»
     or «через Workflow».
@@ -2065,7 +2182,7 @@ lines cut, the owner's first words); open problems left by earlier runs on the s
 the defaults; answers without an agent code; rejected or given-up reviewer answers; files the confirm
 round's copy left out; a confirm round without a planted omission; large data files reviewed through a sample
 (14.10: the last such round, the first file, N rows of M) — and always the audit result
-(пройдена / НЕ пройдена / ещё не запускалась); last) путь к отчёту.
+(пройдена / «пройдена не полностью» with one line per comparison that could not be made / НЕ пройдена / ещё не запускалась); last) путь к отчёту.
 The skill tells the window to show exactly these lines plus the path and nothing invented.
 
 ---
@@ -2358,6 +2475,18 @@ Mirrored in full, with levels, in `docs/honesty-limits.md` (the spec wins if the
     carries a cluster-like id that is no cluster (and no decoy's), like a decoy; the key is sealed in the data home
     (tamper-evident, not tamper-proof). Several controls in one verifier job, and the same control in two jobs, are
     not independent trials. Bench runs and `controlsPerRound: 0` use none. *CODE + EVID.*
+29. The code cross-check of findings (14.6a) is a rule on quotes and can be wrong both ways: a finding whose quote sits on
+    the planted words (12 characters at least, at most twice the planted passage plus 40, standing once in the file,
+    covering 60 % of the changed characters) is counted as a catch of the planted error unless the matcher said, for that
+    very pair, "score below 3, `alsoReal`". A reviewer who quotes the planted sentence to complain about something else in
+    it is therefore counted as a catch (recall can be a little too high; the other complaint is not in this round's to-do
+    list); a reviewer who points at the place with a short core of the changed words is left to the matcher, and omission
+    and visual planted errors are left to it entirely. Also: (c) a matcher "score below 3, `alsoReal`" on the very pair
+    keeps a finding that quotes the planted words among the real problems (the report names it, `crossKept`); (d) a code
+    catch counts for the attention check too, so a lens can be judged valid by a quote of the planted words; (e) the
+    check only adds catches, so an earlier stage-1 catch that never found the planted error stays counted, and the
+    measurement ledger does not tell code catches from matcher catches. The report lists every disagreement between
+    code and matcher. *CODE + EVID.*
 
 ---
 
@@ -2627,6 +2756,7 @@ lint.mjs       loadPatterns(kind: 'trace'|'prompt'|'meta') -> patterns
                findQuote(copyDir, rel|null, quote) -> { found: bool, file: rel|null }   // 12.3 rules
 sources.mjs    checkSources(sources, { allow, notesAbs: [] }) -> [{ id, ok, exitCode, bytes, sha256, sample, error }]
 mechanical.mjs runMechanical(mechanical, snapshotDir, { allow }) -> [{ id, ok, severity, what, details: [string] }]
+mechanical-shape.mjs mechanicalProblems(mechanical, { files, allow, schemaErrors, skipMaterial }) -> [string]   // 9.5 shape check before freeze / amend
 receipts.mjs   makeChallenges({ copyDir, lens, manifest, rng, n: 3 }) -> [challenge]   // 9.8 shape, expected hashed
                renderChallenges(challenges) -> markdown
                checkReceipts(challenges, receipt[]) -> { correct, total }

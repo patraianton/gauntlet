@@ -109,8 +109,8 @@ $PL = 'C:\src\gauntlet\bin\gauntlet.mjs'
 node $PL init --project demo-project --artifact-type marketing-plan `
   --root 'C:\Users\you\work-copies\demo-project\content-plan=content' `
   --notes content/AUTHOR-NOTES.md
-#    -> run folder, e.g. C:\Users\you\work-copies\demo-project\gauntlet-runs\20261006-0930-a1b2c3
-$RUN = 'C:\Users\you\work-copies\demo-project\gauntlet-runs\20261006-0930-a1b2c3'
+#    -> run folder, e.g. C:\Users\you\work-copies\demo-project\gauntlet-runs\20260115-0930-a1b2c3
+$RUN = 'C:\Users\you\work-copies\demo-project\gauntlet-runs\20260115-0930-a1b2c3'
 
 # 3. Copy the task. Cut only loop-control lines ("until the panel gives 9.5"), by line number.
 node $PL task set $RUN --from owner-task.txt --cut 4 --source 'the owner, 2026-10-06, chat'

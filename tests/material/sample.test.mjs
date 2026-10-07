@@ -380,7 +380,7 @@ test('largeDataFilesOfRun: reads the live roots, by manifest path', (t) => {
 });
 
 test('sample settings in run.json: stricter or equal values are free, looser ones need the owner\'s words', () => {
-  const base = applyDefaults({ schemaVersion: 1, runId: '20261006-0930-a1b2c3', project: 'p', artifactType: 'other', material: { roots: [{ path: 'C:\\x', as: 'content', include: ['**/*'] }] } });
+  const base = applyDefaults({ schemaVersion: 1, runId: '20260115-0930-a1b2c3', project: 'p', artifactType: 'other', material: { roots: [{ path: 'C:\\x', as: 'content', include: ['**/*'] }] } });
   assert.equal(base.limits.sampleThresholdBytes, DEFAULT_LIMITS.sampleThresholdBytes);
   assert.deepEqual(looserLimits(base), []);
   const stricter = { ...base, limits: { ...base.limits, sampleRows: 400, sampleTotalBytes: 500000 } };
@@ -438,7 +438,7 @@ test('samplingSettings: the total budget has a default and the run can change it
 });
 
 test('a sampling threshold above the free ceiling needs the owner\'s words (it would hand reviewers a huge file whole)', () => {
-  const base = applyDefaults({ schemaVersion: 1, runId: '20261006-0930-a1b2c3', project: 'p', artifactType: 'other', material: { roots: [{ path: 'C:\\x', as: 'content', include: ['**/*'] }] } });
+  const base = applyDefaults({ schemaVersion: 1, runId: '20260115-0930-a1b2c3', project: 'p', artifactType: 'other', material: { roots: [{ path: 'C:\\x', as: 'content', include: ['**/*'] }] } });
   assert.equal(base.limits.sampleTotalBytes, DEFAULT_LIMITS.sampleTotalBytes);
   const huge = { ...base, limits: { ...base.limits, sampleThresholdBytes: 500 * 1048576 } };
   assert.deepEqual(looserLimits(huge).map((x) => x.key), ['sampleThresholdBytes']);

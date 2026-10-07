@@ -121,7 +121,9 @@ Outcome per (canary × reviewer job):
 | `seen_underclassified` | matched, but below the floor ("noticed it, called it minor") — counts as a miss for lens validity |
 | `missed` | not matched |
 
-Matched findings are removed from the real-issue pipeline unless the matcher marks them `alsoReal`.
+Matched findings are removed from the real-issue pipeline unless the matcher marks them `alsoReal` on the very pair that matched them.
+After the matcher, code also checks every finding against the planted text itself (SPEC 14.6a): a finding whose quote sits on the
+planted words is a catch even if the matcher did not say so, and the disagreement is shown in the report.
 
 ## 6. What one run's numbers mean
 

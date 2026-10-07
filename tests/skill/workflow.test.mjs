@@ -14,7 +14,7 @@ const WF = path.join(REPO, 'workflows', 'gauntlet.workflow.js');
 const SRC = fs.readFileSync(WF, 'utf8');
 const FIX = JSON.parse(fs.readFileSync(path.join(REPO, 'tests', 'fixtures', 'skill', 'envelopes.json'), 'utf8'));
 const CLI = 'C:\\Users\\user\\gauntlet\\bin\\gauntlet.mjs';
-const RUN = 'C:\\Users\\user\\work-copies\\demo\\gauntlet-runs\\20261006-0930-a1b2c3';
+const RUN = 'C:\\Users\\user\\work-copies\\demo\\gauntlet-runs\\20260115-0930-a1b2c3';
 
 // ---- helpers -----------------------------------------------------------------------------------
 
