@@ -1,0 +1,12 @@
+{
+  "description": "Material file list (copy-relative paths) of bench/material/bakery, used to test lens coverage of the library example.",
+  "files": [
+    "content/content-plan/AUTHOR-NOTES.md",
+    "content/content-plan/page_text.json",
+    "content/content-plan/plan.json",
+    "content/page/index.html",
+    "content/render/out/B1.png",
+    "content/render/out/B2.png",
+    "content/render/out/B3.png"
+  ]
+}

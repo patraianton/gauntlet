@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "nonce": "PL-K7QZ-M2XA",
+  "items": [
+    {
+      "item": "D1",
+      "outcome": "upheld",
+      "severity": null,
+      "why": "Re-ran the author command; output still shows 4 cars, not 5."
+    },
+    {
+      "item": "D2",
+      "outcome": "reclassified",
+      "severity": "cosmetic",
+      "why": "The wording differs but the meaning is the same in both languages."
+    },
+    {
+      "item": "D3",
+      "outcome": "withdrawn",
+      "severity": null,
+      "why": "The quoted line exists in the form text in copy.ts line 41."
+    }
+  ]
+}

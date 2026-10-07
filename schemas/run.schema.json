@@ -1,0 +1,529 @@
+{
+  "$id": "gauntlet/run.schema.json",
+  "description": "run.json (SPEC 9.1). config.mjs adds the opt-in rules a schema cannot express (the owner label, trimmed quote length, real dates).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "runId",
+    "project",
+    "artifactType",
+    "createdAt",
+    "projectDir",
+    "reviewBase",
+    "reportDir",
+    "language",
+    "material",
+    "limits",
+    "canaries",
+    "generalist",
+    "models",
+    "driver",
+    "allowExecutables"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "runId": {
+      "type": "string",
+      "pattern": "^[0-9]{8}-[0-9]{4}-[0-9a-f]{6}$"
+    },
+    "project": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifactType": {
+      "type": "string",
+      "enum": [
+        "marketing-plan",
+        "copy",
+        "slides",
+        "report",
+        "code",
+        "other"
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "minLength": 10
+    },
+    "projectDir": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewBase": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reportDir": {
+      "type": "string",
+      "minLength": 1
+    },
+    "language": {
+      "type": "object",
+      "required": [
+        "answers",
+        "report"
+      ],
+      "properties": {
+        "answers": {
+          "type": "string",
+          "enum": [
+            "ru",
+            "lv",
+            "en"
+          ]
+        },
+        "report": {
+          "type": "string",
+          "enum": [
+            "ru"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ownerTarget": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "material": {
+      "type": "object",
+      "required": [
+        "roots"
+      ],
+      "properties": {
+        "roots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "as",
+              "include"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "as": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9_-]{0,31}$"
+              },
+              "include": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1
+              },
+              "exclude": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "authorNotes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "readingOrder": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "rebuild": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "cmd",
+        "args",
+        "cwd",
+        "sourcesGlob",
+        "outputsGlob",
+        "timeoutS"
+      ],
+      "properties": {
+        "cmd": {
+          "type": "string",
+          "minLength": 1
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cwd": {
+          "type": "string",
+          "minLength": 1
+        },
+        "env": {
+          "type": "object"
+        },
+        "sourcesGlob": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "outputsGlob": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "timeoutS": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7200
+        }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "required": [
+        "maxRounds",
+        "maxConfirms",
+        "maxPanelTokens",
+        "plateauRounds",
+        "maxLensReruns",
+        "verifierBatchMax",
+        "roundTokenEstimate"
+      ],
+      "properties": {
+        "maxRounds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxConfirms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxPanelTokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "plateauRounds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxLensReruns": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "verifierBatchMax": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "roundTokenEstimate": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sampleThresholdBytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sampleThresholdRows": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sampleRows": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sampleMaxBytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sampleTotalBytes": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "canaries": {
+      "type": "object",
+      "required": [
+        "attentionPerLens",
+        "measurementWorking",
+        "measurementConfirm",
+        "candidatesPerSlot",
+        "maxEditChars",
+        "minDistanceChars",
+        "visualAllowed"
+      ],
+      "properties": {
+        "attentionPerLens": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1
+        },
+        "measurementWorking": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "measurementConfirm": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "candidatesPerSlot": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "maxEditChars": {
+          "type": "integer",
+          "minimum": 20,
+          "maximum": 1200
+        },
+        "minDistanceChars": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20000
+        },
+        "decoysPerRound": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16
+        },
+        "controlsPerRound": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16
+        },
+        "visualAllowed": {
+          "type": "boolean"
+        },
+        "fixedKey": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "path",
+            "prePlanted",
+            "approvedBy",
+            "quote",
+            "date"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "prePlanted": {
+              "type": "boolean"
+            },
+            "approvedBy": {
+          "type": "string",
+          "minLength": 1
+        },
+            "quote": {
+              "type": "string",
+              "minLength": 1
+            },
+            "question": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 1000
+            },
+            "date": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "generalist": {
+      "type": "boolean"
+    },
+    "models": {
+      "type": "object",
+      "required": [
+        "optIn"
+      ],
+      "properties": {
+        "optIn": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "role",
+              "model",
+              "approvedBy",
+              "quote",
+              "date"
+            ],
+            "properties": {
+              "role": {
+                "type": "string",
+                "enum": [
+                  "reviewer",
+                  "verifier",
+                  "planter",
+                  "validator",
+                  "matcher",
+                  "lens-writer",
+                  "confirm-extra"
+                ]
+              },
+              "model": {
+                "type": "string",
+                "minLength": 1
+              },
+              "approvedBy": {
+                "type": "string",
+                "minLength": 1
+              },
+              "quote": {
+                "type": "string",
+                "minLength": 1
+              },
+              "question": {
+                "type": "string",
+                "minLength": 10,
+                "maxLength": 1000
+              },
+              "date": {
+                "type": "string",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "driver": {
+      "type": "object",
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "agent",
+            "workflow"
+          ]
+        },
+        "workflowOptIn": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "quote",
+            "date"
+          ],
+          "properties": {
+            "quote": {
+              "type": "string",
+              "minLength": 1
+            },
+            "question": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 1000
+            },
+            "date": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "allowExecutables": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9._+-]{1,64}$"
+      }
+    },
+    "supersedes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "runId",
+          "reason"
+        ],
+        "properties": {
+          "runId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "limitsOptIn": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "The owner's recorded words for limits looser than the defaults (config.mjs looserLimits).",
+      "required": [
+        "approvedBy",
+        "quote",
+        "date"
+      ],
+      "properties": {
+        "approvedBy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1
+        },
+        "question": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000
+        },
+        "date": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

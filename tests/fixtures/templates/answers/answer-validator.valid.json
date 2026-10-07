@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "nonce": "PL-K7QZ-M2XA",
+  "verdicts": [
+    {
+      "slot": "S1",
+      "alt": 1,
+      "originalCorrect": true,
+      "isDefect": true,
+      "provable": true,
+      "natural": 4,
+      "giveaway": false,
+      "severity": "major",
+      "keep": true,
+      "why": "38 reels are in plan.json; 18 would contradict it."
+    },
+    {
+      "slot": "S1",
+      "alt": 2,
+      "originalCorrect": false,
+      "isDefect": true,
+      "provable": true,
+      "natural": 4,
+      "giveaway": false,
+      "severity": "major",
+      "keep": false,
+      "why": "The original already disagrees with the calendar."
+    }
+  ]
+}

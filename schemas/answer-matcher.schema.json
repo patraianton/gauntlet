@@ -1,0 +1,56 @@
+{
+  "$id": "gauntlet/answer-matcher.schema.json",
+  "description": "Matcher answer (SPEC 9.9): finding is \"<job>#<n>\" or null; score >= 3 means the same defect.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "nonce",
+    "pairs"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "nonce": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pairs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "canary",
+          "finding",
+          "score",
+          "alsoReal",
+          "why"
+        ],
+        "properties": {
+          "canary": {
+            "type": "string",
+            "pattern": "^C[0-9]+$"
+          },
+          "finding": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-z2-9]{8}#[0-9]+$"
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "alsoReal": {
+            "type": "boolean"
+          },
+          "why": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

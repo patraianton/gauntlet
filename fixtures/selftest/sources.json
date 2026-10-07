@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "id": "S1",
+      "what": "The workshop price list for the autumn offer (prices and the end date of the offer).",
+      "kind": "file",
+      "path": "{{SOURCES_DIR}}/prices.txt",
+      "expect": "contains:45 EUR",
+      "origin": "The autumn price list file kept by the booking team (outside the work folder)."
+    },
+    {
+      "id": "S2",
+      "what": "The price of the three-check package, as the booking system computes it.",
+      "kind": "command",
+      "cmd": "node",
+      "args": ["{{SOURCES_DIR}}/package-price.mjs"],
+      "expect": "contains:45",
+      "origin": "The booking system price formula, three checks at 15 EUR each."
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "$id": "gauntlet/frozen.schema.json",
+  "description": "FROZEN.json (SPEC 9.6): hashes of everything frozen before round 1.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "frozenAt",
+    "tool",
+    "sha256",
+    "instrumentId"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "frozenAt": {
+      "type": "string",
+      "minLength": 10
+    },
+    "tool": {
+      "type": "object",
+      "required": [
+        "version",
+        "gitHead"
+      ],
+      "properties": {
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "gitHead": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      }
+    },
+    "sha256": {
+      "type": "object",
+      "required": [
+        "ownerTask",
+        "task",
+        "run",
+        "lenses",
+        "sources",
+        "strip",
+        "mechanical",
+        "templates",
+        "taxonomy",
+        "catalog"
+      ],
+      "properties": {
+        "ownerTask": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "task": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "run": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "lenses": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "sources": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "strip": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "mechanical": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "templates": {
+          "type": "object"
+        },
+        "taxonomy": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "catalog": {
+          "type": "object"
+        }
+      }
+    },
+    "instrumentId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

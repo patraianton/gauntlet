@@ -1,0 +1,272 @@
+{
+  "schemaVersion": 1,
+  "description": "Scripted agent outputs for the offline selftest (SPEC 21.3). Keys: decoyWriter.decoys (the false findings the decoy writer proposes), decoy.confirm {passes, batches, rounds} (verifier jobs that accept the false items shown to them), reviewers[round][lens][attempt] ('*' = any). Placeholders inside strings: {{nonce}}, {{receipt:Q1}}, {{canary:S1}}. A finding written as {\"canaryFinding\": \"own\"} is generated from the planted error that targets the reviewer's lens; {\"canaryFinding\": \"S2\"} from the planted error of slot S2.",
+  "seed": "5e1f7e57c0ffee00d15ea5edba5eba11",
+  "cutLines": "6",
+  "source": "the owner, 2026-10-06, selftest fixture",
+  "readingOrder": ["content/plan.json", "content/page.md"],
+  "planterAvoid": ["50 €", "45 €", "октября", "ноября", "\"cta\": \"\"", "Частые вопросы", "Скидка действует"],
+  "lensWriter": {
+    "requirements": [
+      { "id": "R01", "text": "Контент-план содержит 12 постов.", "taskQuote": "контент-план из 12 постов", "ifMissing": "blocker" },
+      { "id": "R02", "text": "У каждого поста есть призыв к действию.", "taskQuote": "Каждый пост должен иметь призыв к действию", "ifMissing": "blocker" },
+      { "id": "R03", "text": "Цены в постах совпадают с ценами на странице акции.", "taskQuote": "Цены в постах и на странице акции должны совпадать", "ifMissing": "major" },
+      { "id": "R04", "text": "Страница акции объясняет условия и отвечает на частые вопросы.", "taskQuote": "Страница акции должна объяснять условия и отвечать на частые вопросы", "ifMissing": "major" }
+    ],
+    "lenses": [
+      {
+        "id": "facts",
+        "title": "Факты и числа",
+        "duty": "Найти каждое число, дату или факт, которые неверны или не подтверждаются прайсом.",
+        "procedure": [
+          "Выпишите все цены, суммы и даты из плана и со страницы.",
+          "Сверьте каждую цену и дату с прайсом (источник S1) и пересчитайте каждую сумму.",
+          "Поставьте рядом одинаковые цены и даты из разных мест и сравните их."
+        ],
+        "checklist": [
+          "Совпадает ли каждая цена с прайсом?",
+          "Верно ли посчитана каждая сумма?",
+          "Совпадает ли дата окончания акции во всех местах?",
+          "Совпадают ли цены в постах и на странице?",
+          "Нет ли фактов, которых нет в источниках?"
+        ],
+        "minimum": [
+          { "id": "M1", "rule": "Прочитать каждый пост: подпись, цену и призыв.", "kind": "all-entries", "glob": "content/plan.json", "pointer": "/posts" },
+          { "id": "M2", "rule": "Прочитать страницу акции целиком.", "kind": "all-files", "glob": "content/page.md" },
+          { "id": "M3", "rule": "Сверить с прайсом не меньше двух цен.", "kind": "source-check", "sourceId": "S1", "count": 2 }
+        ],
+        "canaryTypes": ["FACT-NUM", "CONTRA", "FACT-CLAIM"]
+      },
+      {
+        "id": "language",
+        "title": "Язык и стиль",
+        "duty": "Найти каждую языковую ошибку, которую заметит носитель русского языка.",
+        "procedure": [
+          "Прочитайте каждую подпись поста и каждую строку страницы.",
+          "Отметьте орфографию, падежи, согласование и пунктуацию.",
+          "Сравните тон постов между собой."
+        ],
+        "checklist": [
+          "Нет ли орфографических ошибок?",
+          "Верно ли согласованы слова?",
+          "Нет ли кальки с английского?",
+          "Одинаков ли тон во всех постах?",
+          "Понятны ли призывы к действию?"
+        ],
+        "minimum": [
+          { "id": "M1", "rule": "Прочитать каждый пост целиком.", "kind": "all-entries", "glob": "content/plan.json", "pointer": "/posts" },
+          { "id": "M2", "rule": "Прочитать каждый текстовый файл целиком.", "kind": "all-files", "glob": "content/*.md" }
+        ],
+        "canaryTypes": ["LANG", "OMIT-CAVEAT"]
+      },
+      {
+        "id": "conversion",
+        "title": "Путь к записи",
+        "duty": "Проверить, что каждый пост и страница ведут человека к записи на проверку.",
+        "procedure": [
+          "Для каждого поста найдите призыв к действию.",
+          "Проверьте, что призыв называет, где записаться.",
+          "Пройдите путь от поста до записи по странице акции."
+        ],
+        "checklist": [
+          "Есть ли призыв в каждом посте?",
+          "Понятно ли, где записаться?",
+          "Есть ли на странице способ записаться?",
+          "Не противоречат ли условия призыву?",
+          "Нет ли лишних шагов до записи?"
+        ],
+        "minimum": [
+          { "id": "M1", "rule": "Проверить призыв в каждом посте.", "kind": "all-entries", "glob": "content/plan.json", "pointer": "/posts" },
+          { "id": "M2", "rule": "Прочитать страницу акции целиком.", "kind": "all-files", "glob": "content/page.md" }
+        ],
+        "canaryTypes": ["PATH", "OMIT-REQ", "BRIEF"]
+      },
+      {
+        "id": "generalist",
+        "title": "Первый читатель",
+        "duty": "Прочитать всю работу как человек, у которого есть только задание, и найти, где работа не даёт того, что просили.",
+        "procedure": [
+          "Прочитайте задание и выпишите, что должно быть в работе.",
+          "Откройте каждый файл работы.",
+          "Отметьте, чего не хватает и что непонятно."
+        ],
+        "checklist": [
+          "Есть ли всё, что просит задание?",
+          "Понятны ли условия акции?",
+          "Отвечает ли страница на частые вопросы?",
+          "Нет ли противоречий между частями?",
+          "Понятно ли, что делать дальше?"
+        ],
+        "minimum": [
+          { "id": "M1", "rule": "Открыть каждый файл работы.", "kind": "all-files", "glob": "content/**/*" }
+        ],
+        "canaryTypes": ["BRIEF", "OMIT-REQ"]
+      }
+    ]
+  },
+  "decoyWriter": {
+    "decoys": [
+      {
+        "kind": "quote",
+        "file": "content/page.md",
+        "locator": "раздел Сроки, последняя строка",
+        "quote": "Мастерская работает с 8:00 до 20:00.",
+        "missingWhat": "",
+        "claim": "Часы работы мастерской указаны до 20:00, а в разделе вопросов сказано, что принимают только до обеда.",
+        "claimedSeverity": "major",
+        "whyFalse": "В разделе вопросов нет слов про приём только до обеда, часы работы нигде не противоречат друг другу.",
+        "proofFile": "content/page.md",
+        "proofQuote": "Можно, если есть свободный мастер, но цена будет обычной."
+      },
+      {
+        "kind": "quote",
+        "file": "content/page.md",
+        "locator": "раздел Цены, последняя строка",
+        "quote": "Повторная проверка в течение 30 дней: бесплатно.",
+        "missingWhat": "",
+        "claim": "Срок бесплатной повторной проверки (30 дней) не совпадает со сроком в условиях, где сказано про 14 дней.",
+        "claimedSeverity": "major",
+        "whyFalse": "В условиях нет срока в 14 дней: там говорится про опоздание на 15 минут и про срок пакета.",
+        "proofFile": "content/page.md",
+        "proofQuote": "Если вы опоздали больше чем на 15 минут, запись переносится."
+      },
+      {
+        "kind": "missing",
+        "file": "content/page.md",
+        "locator": "вся страница",
+        "quote": "",
+        "missingWhat": "На странице акции нет адреса мастерской.",
+        "claim": "Читателю нигде не сказано, где находится мастерская, поэтому записаться и приехать нельзя.",
+        "claimedSeverity": "blocker",
+        "whyFalse": "Адрес мастерской указан в разделе вопросов.",
+        "proofFile": "content/page.md",
+        "proofQuote": "Спрингфилд, улица Примерная, 1, вход со двора."
+      },
+      {
+        "kind": "missing",
+        "file": "content/page.md",
+        "locator": "вся страница",
+        "quote": "",
+        "missingWhat": "На странице не сказано, как можно оплатить проверку.",
+        "claim": "Способ оплаты проверки на странице не описан, а клиенты обычно спрашивают об этом первым делом.",
+        "claimedSeverity": "major",
+        "whyFalse": "Способы оплаты названы в разделе вопросов.",
+        "proofFile": "content/page.md",
+        "proofQuote": "Да, принимаем карты и оплату по ссылке."
+      },
+      {
+        "kind": "quote",
+        "file": "content/plan.json",
+        "locator": "пост 1, подпись",
+        "quote": "Холода близко, и велосипеду нужен осмотр.",
+        "missingWhat": "",
+        "claim": "Подпись первого поста обещает осмотр тормозов, шин и цепи, а страница про цепь ничего не говорит.",
+        "claimedSeverity": "major",
+        "whyFalse": "На странице цепь описана в списке осмотра.",
+        "proofFile": "content/page.md",
+        "proofQuote": "Цепь и звёзды: износ и смазка."
+      },
+      {
+        "kind": "quote",
+        "file": "content/plan.json",
+        "locator": "пост 2, подпись",
+        "quote": "Двадцать пунктов за сорок минут.",
+        "missingWhat": "",
+        "claim": "В посте 2 названо двадцать пунктов, а на странице акции обещано другое число пунктов осмотра.",
+        "claimedSeverity": "major",
+        "whyFalse": "На странице тоже двадцать пунктов, числа совпадают.",
+        "proofFile": "content/page.md",
+        "proofQuote": "Мастер проверит двадцать пунктов и покажет каждый результат."
+      }
+    ]
+  },
+  "reviewers": {
+    "1": {
+      "facts": {
+        "*": {
+          "findings": [
+            { "canaryFinding": "own" },
+            {
+              "severity": "major",
+              "kind": "number",
+              "location": { "file": "content/page.md", "locator": "раздел Цены, строка о пакете" },
+              "quote": "3 × 15 € = 50 €",
+              "problem": "Сумма пакета посчитана неверно: три проверки по 15 € стоят 45 €, а не 50 €.",
+              "fix": "Исправить сумму на 45 €.",
+              "evidence": "Прайс S1: пакет из трёх проверок 45 EUR."
+            },
+            {
+              "severity": "major",
+              "kind": "contradiction",
+              "location": { "file": "content/plan.json", "locator": "пост 7, подпись" },
+              "quote": "Акция действует до 15 ноября",
+              "quote2": "Акция действует до 31 октября",
+              "problem": "Дата окончания акции в посте 7 противоречит странице акции и прайсу.",
+              "fix": "Указать в посте 7 ту же дату, что на странице.",
+              "evidence": "Прайс S1: акция до 31 октября."
+            }
+          ]
+        }
+      },
+      "language": {
+        "1": { "findings": [] },
+        "*": { "findings": [{ "canaryFinding": "own" }] }
+      },
+      "conversion": {
+        "*": {
+          "findings": [{ "canaryFinding": "own" }],
+          "requirements": { "R02": "absent" }
+        }
+      },
+      "generalist": {
+        "*": {
+          "findings": [
+            { "canaryFinding": "own" },
+            {
+              "severity": "major",
+              "kind": "fact",
+              "location": { "file": "content/page.md", "locator": "раздел Условия" },
+              "quote": "Скидка 70% для всех клиентов",
+              "problem": "Обещание скидки 70% для всех не подтверждается прайсом.",
+              "fix": "Убрать обещание или подтвердить его источником."
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "*": { "*": { "findings": [{ "canaryFinding": "own" }] } }
+    },
+    "3": {
+      "generalist": {
+        "*": {
+          "findings": [
+            { "canaryFinding": "own" },
+            {
+              "severity": "major",
+              "kind": "other",
+              "location": { "file": "content/page.md", "locator": "раздел Частые вопросы, заголовок" },
+              "quote": "## Частые вопросы",
+              "problem": "Заголовок раздела слишком общий, его легко пропустить.",
+              "fix": "Назвать раздел конкретнее."
+            }
+          ]
+        }
+      },
+      "*": { "*": { "findings": [{ "canaryFinding": "own" }] } }
+    }
+  },
+  "verifier": {
+    "1": [
+      { "match": "50 €", "verdict": "confirmed", "severity": "major", "evidence": "Прайс S1 и команда S2 дают 45 EUR; на странице 50 €." },
+      { "match": "15 ноября", "verdict": "confirmed", "severity": "major", "evidence": "Страница и прайс S1: до 31 октября; пост 7: до 15 ноября." },
+      { "match": "призыв", "verdict": "confirmed", "severity": "blocker", "evidence": "В постах 4 и 9 поле cta пустое (content/plan.json)." },
+      { "match": "70%", "verdict": "refuted", "severity": null, "evidence": "Такого текста нет ни в одном файле работы." }
+    ],
+    "2": [],
+    "3": [
+      { "match": "Частые вопросы", "verdict": "confirmed", "severity": "cosmetic", "evidence": "Заголовок есть в content/page.md; это вопрос вкуса." }
+    ],
+    "default": { "verdict": "refuted", "severity": null, "evidence": "Проверил место в материале: проблемы там больше нет." }
+  }
+}

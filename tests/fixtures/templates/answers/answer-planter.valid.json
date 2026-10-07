@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "nonce": "PL-K7QZ-M2XA",
+  "candidates": [
+    {
+      "slot": "S1",
+      "alt": 1,
+      "file": "content/content-plan/plan.json",
+      "locator": "/posts/37/hook_ru",
+      "before": "Ролики (38 штук)",
+      "after": "Ролики (18 штук)",
+      "description": "The reel count no longer matches the plan.",
+      "howProvable": "Count the posts with format reel in plan.json: 38.",
+      "intendedSeverity": "major"
+    },
+    {
+      "slot": "S1",
+      "alt": 2,
+      "file": "content/content-plan/page_text.json",
+      "locator": "/strategy/2",
+      "before": "3 поста в неделю",
+      "after": "4 поста в неделю",
+      "description": "The weekly frequency no longer matches the calendar.",
+      "howProvable": "plan.json dates give 3 posts per week.",
+      "intendedSeverity": "major"
+    }
+  ],
+  "incidental": [
+    {
+      "file": "content/page/img/E3.png",
+      "locator": "whole image",
+      "note": "Old version with a visible licence plate."
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "$id": "gauntlet/m-control.schema.json",
+  "description": "measurements/controls.jsonl row (SPEC 14.12): one line per true control (a real, planted defect that a reviewer found) shown to one verifier job.",
+  "type": "object",
+  "required": [
+    "runId",
+    "round",
+    "control",
+    "outcome"
+  ],
+  "properties": {
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "round": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "roundKind": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "working",
+        "confirm",
+        null
+      ]
+    },
+    "control": {
+      "type": "string",
+      "pattern": "^K[0-9]+$"
+    },
+    "canary": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "plantedSeverity": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "wave": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "pass": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "job": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "kept",
+        "dismissed",
+        "downgraded",
+        "undecided",
+        "no-answer"
+      ]
+    },
+    "verdict": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "severityGiven": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "batchTainted": {
+      "type": "boolean"
+    },
+    "verifierModel": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "instrumentId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "artifactType": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contaminated": {
+      "type": "boolean"
+    }
+  }
+}

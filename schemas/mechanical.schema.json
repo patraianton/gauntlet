@@ -1,0 +1,95 @@
+{
+  "$id": "gauntlet/mechanical.schema.json",
+  "description": "mechanical.json (SPEC 9.5): deterministic checks run on the snapshot before any agent.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "checks"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "what",
+          "severity",
+          "kind"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^K[0-9]{1,2}$"
+          },
+          "what": {
+            "type": "string",
+            "minLength": 1
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "blocker",
+              "major",
+              "cosmetic"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "json-valid",
+              "count",
+              "file-exists",
+              "no-forbidden-text",
+              "command"
+            ]
+          },
+          "glob": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pointer": {
+            "type": "string"
+          },
+          "op": {
+            "type": "string",
+            "enum": [
+              ">=",
+              "=",
+              "<="
+            ]
+          },
+          "value": {
+            "type": "number"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "patterns": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "cmd": {
+            "type": "string",
+            "minLength": 1
+          },
+          "args": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

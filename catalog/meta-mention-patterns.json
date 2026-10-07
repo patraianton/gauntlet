@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "description": "Patterns that flag a reviewer answer which talks about planted or test errors instead of the work (SPEC 12.1 step 5, 12.2). A hit makes the attempt invalid; its findings still count, UNLESS the engine can show that the matched text comes from the reviewed material or from a primary source output (a verbatim quote with context, a search term that the source output really contains, or - only for patterns marked quotableTerm - a whole word that the material itself uses; see lib/material/meta-quote.mjs). Every regex is compiled with the flags shown plus 'g' and 'u'.",
+  "patterns": [
+    { "id": "M-PLANTED", "regex": "\\bplant(?:ed|ing)\\s+(?:errors?|mistakes?|defects?|bugs?|issues?|problems?)\\b", "flags": "i", "lang": "en", "why": "names planted errors" },
+    { "id": "M-WAS-PLANTED", "regex": "\\b(?:was|were|been|is|are|looks|seems)\\s+(?:deliberately\\s+|intentionally\\s+)?planted\\b", "flags": "i", "lang": "en", "why": "says something was planted" },
+    { "id": "M-CANARY", "regex": "\\bcanar(?:y|ies)\\b", "flags": "i", "lang": "en", "why": "names canaries" },
+    { "id": "M-TEST-ERROR-EN", "regex": "\\b(?:test|seeded|injected|intentional|deliberate|artificial)\\s+(?:errors?|mistakes?|defects?|bugs?)\\b", "flags": "i", "lang": "en", "why": "names test or seeded errors" },
+    { "id": "M-DELIB-INSERTED-EN", "regex": "\\b(?:deliberately|intentionally|purposely)\\s+(?:inserted|introduced|added|placed|planted|seeded)\\b", "flags": "i", "lang": "en", "why": "says an error was inserted on purpose" },
+    { "id": "M-ATTENTION-CHECK", "regex": "\\battention\\s+checks?\\b", "flags": "i", "lang": "en", "why": "names an attention check" },
+    { "id": "M-HONEYPOT", "regex": "\\bhoneypots?\\b", "flags": "i", "lang": "en", "quotableTerm": true, "why": "names a honeypot (a trap for planted errors) - but an anti-bot honeypot field is also ordinary source code, so the word is excused when the material or a source output uses it" },
+    { "id": "M-PODLOZH-RU", "regex": "подлож(?:ен|ил|ит|енн)", "flags": "i", "lang": "ru", "why": "names planted errors (\"подложенная ошибка\")" },
+    { "id": "M-TEST-ERROR-RU", "regex": "(?:тестов|проверочн|контрольн)(?:ая|ую|ой|ые|ых|ыми)\\s+ошибк", "flags": "i", "lang": "ru", "why": "names a test error (\"тестовая ошибка\")" },
+    { "id": "M-SPECIALNO-RU", "regex": "(?:специально|намеренно|нарочно)\\s+(?:вставлен|добавлен|внесен|внесён|оставлен|допущен|подлож)", "flags": "i", "lang": "ru", "why": "says an error was inserted on purpose" },
+    { "id": "M-LV-TEST-ERROR", "regex": "(?<![\\p{L}])(?:testa|pārbaudes)\\s+kļūd", "flags": "i", "lang": "lv", "why": "names a test error (\"testa kļūda\")" },
+    { "id": "M-LV-INSERTED", "regex": "(?<![\\p{L}])(?:apzināti|speciāli|tīši)\\s+(?:ievietot|pievienot|iestrādāt|atstāt)", "flags": "i", "lang": "lv", "why": "says an error was inserted on purpose" }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "description": "Test double written by P5 from SPEC 9.9/9.6; the real schema lives in schemas/ (P1).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "nonce",
+    "items"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "nonce": {
+      "type": "string",
+      "pattern": "^PL-[A-Z2-9]{4}-[A-Z2-9]{4}$"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "item",
+          "verdict",
+          "severity",
+          "evidence"
+        ],
+        "properties": {
+          "item": {
+            "type": "string",
+            "pattern": "^V[0-9]+$"
+          },
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "confirmed",
+              "refuted",
+              "unverifiable"
+            ]
+          },
+          "severity": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "blocker",
+              "major",
+              "cosmetic",
+              null
+            ]
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 10
+          },
+          "quoteNow": {
+            "type": "string"
+          },
+          "whereNow": {
+            "type": "string"
+          }
+        }
+      },
+      "minItems": 1
+    }
+  }
+}

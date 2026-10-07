@@ -1,0 +1,120 @@
+{
+  "$id": "gauntlet/m-decoy.schema.json",
+  "description": "measurements/decoys.jsonl row (SPEC 14.11): one line per false finding (decoy) shown to one verifier job.",
+  "type": "object",
+  "required": [
+    "runId",
+    "round",
+    "decoy",
+    "outcome"
+  ],
+  "properties": {
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "round": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "roundKind": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "working",
+        "confirm",
+        null
+      ]
+    },
+    "decoy": {
+      "type": "string",
+      "pattern": "^D[0-9]+$"
+    },
+    "kind": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "quote",
+        "missing",
+        null
+      ]
+    },
+    "claimedSeverity": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "blocker",
+        "major",
+        null
+      ]
+    },
+    "wave": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "pass": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "job": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "rejected",
+        "confirmed",
+        "undecided",
+        "no-answer"
+      ]
+    },
+    "verdict": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "severityGiven": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "batchTainted": {
+      "type": "boolean"
+    },
+    "verifierModel": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "instrumentId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "artifactType": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contaminated": {
+      "type": "boolean"
+    }
+  }
+}

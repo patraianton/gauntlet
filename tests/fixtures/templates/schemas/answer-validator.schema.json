@@ -1,0 +1,80 @@
+{
+  "description": "Test double written by P5 from SPEC 9.9/9.6; the real schema lives in schemas/ (P1).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "nonce",
+    "verdicts"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "nonce": {
+      "type": "string",
+      "pattern": "^PL-[A-Z2-9]{4}-[A-Z2-9]{4}$"
+    },
+    "verdicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "slot",
+          "alt",
+          "originalCorrect",
+          "isDefect",
+          "provable",
+          "natural",
+          "giveaway",
+          "severity",
+          "keep",
+          "why"
+        ],
+        "properties": {
+          "slot": {
+            "type": "string",
+            "pattern": "^S[0-9]+$"
+          },
+          "alt": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2
+          },
+          "originalCorrect": {
+            "type": "boolean"
+          },
+          "isDefect": {
+            "type": "boolean"
+          },
+          "provable": {
+            "type": "boolean"
+          },
+          "natural": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "giveaway": {
+            "type": "boolean"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "blocker",
+              "major",
+              "cosmetic"
+            ]
+          },
+          "keep": {
+            "type": "boolean"
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 1
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "$id": "gauntlet/manifest.schema.json",
+  "description": "Material manifest (SPEC 9.3).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "versionHash",
+    "files"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "versionHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "rel",
+          "sha256",
+          "bytes",
+          "kind"
+        ],
+        "properties": {
+          "rel": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "text",
+              "json",
+              "html",
+              "image",
+              "video",
+              "binary"
+            ]
+          }
+        }
+      }
+    },
+    "counts": {
+      "type": "object"
+    },
+    "unlistedRecent": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

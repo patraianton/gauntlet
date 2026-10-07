@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "taskSha256": "f3db20588a955fc360c4a18e98f1714683f5cf9a2e42501e77257d7efa3b5498",
+  "requirements": [
+    {
+      "id": "R01",
+      "text": "В презентации 12 слайдов; это презентация для владельцев веломагазинов о размещении их велосипедов на площадке.",
+      "taskQuote": "Make a 12-slide sales deck for bike-shop owners about listing their bikes on our marketplace.",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R02",
+      "text": "В презентации есть цифры посещаемости из выгрузки аналитики.",
+      "taskQuote": "our traffic numbers from the analytics export",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R03",
+      "text": "В презентации есть прайс.",
+      "taskQuote": "the price list",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R04",
+      "text": "В презентации есть два примера клиентов.",
+      "taskQuote": "two customer examples",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R05",
+      "text": "Слайды читаются на экране ноутбука и в чёрно-белой распечатке.",
+      "taskQuote": "Slides must be readable on a laptop screen and when printed in black and white.",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R06",
+      "text": "Цвета бренда и логотип есть на каждом слайде.",
+      "taskQuote": "Use our brand colours and logo on every slide.",
+      "ifMissing": "blocker"
+    }
+  ],
+  "lenses": [
+    {
+      "id": "data",
+      "title": "Числа против данных",
+      "duty": "Найти каждое число, значение на графике, цену или факт о клиенте на слайдах, которые расходятся с выгрузкой аналитики, прайсом или источниками.",
+      "procedure": [
+        "List every number on every slide: traffic, growth, prices, customer results.",
+        "Find each number in the analytics export or the price list and recompute any derived figure (growth, sums, shares).",
+        "Check that chart bars, labels and axis values match the numbers they show.",
+        "Check customer example facts against the sources and record each command."
+      ],
+      "checklist": [
+        "Does every traffic number match the analytics export for the stated period?",
+        "Are derived figures (growth, shares, sums) computed correctly?",
+        "Do chart values and labels match the data?",
+        "Does every price match the price list?",
+        "Are customer example facts supported by a source?",
+        "Is the same number stated the same way on every slide?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Every row of the analytics export used by a slide.",
+          "kind": "all-files",
+          "glob": "**/*.csv"
+        },
+        {
+          "id": "M2",
+          "rule": "Every price item.",
+          "kind": "all-entries",
+          "glob": "**/prices.json",
+          "pointer": "/items"
+        },
+        {
+          "id": "M3",
+          "rule": "Every number on every slide image.",
+          "kind": "all-files",
+          "glob": "**/slides/*.png"
+        },
+        {
+          "id": "M4",
+          "rule": "Check customer example facts against the sources.",
+          "kind": "source-check",
+          "sourceId": "S1",
+          "count": 2
+        }
+      ],
+      "canaryTypes": [
+        "FACT-NUM",
+        "CONTRA"
+      ]
+    },
+    {
+      "id": "design",
+      "title": "Читаемость и бренд на каждом слайде",
+      "duty": "Найти каждый слайд, который трудно прочитать на экране ноутбука или в чёрно-белой распечатке, и каждый слайд, где элементы бренда отличаются от остальных или пропали.",
+      "procedure": [
+        "Open every slide image at laptop size and check text size, contrast and hierarchy.",
+        "Convert or view every slide in greyscale and check that charts and highlighted text still read without colour.",
+        "Put all slides side by side and compare the logo, footer, colours and fonts of each slide with its neighbours; a slide whose logo or footer differs or is missing is a finding.",
+        "Read the deck source for layouts that the images do not show (overflowing text, hidden elements)."
+      ],
+      "checklist": [
+        "Is text large enough and contrasted enough on a laptop screen?",
+        "Do charts and highlights still read in black and white?",
+        "Is the logo present and identical on every slide?",
+        "Are brand colours and fonts used consistently?",
+        "Is anything cut off, overlapping or overflowing?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Open every slide image and compare logos and footers across all slides side by side.",
+          "kind": "all-files",
+          "glob": "**/slides/*.png"
+        },
+        {
+          "id": "M2",
+          "rule": "The deck source: every slide's layout.",
+          "kind": "all-files",
+          "glob": "**/deck.html"
+        }
+      ],
+      "canaryTypes": [
+        "VISUAL",
+        "OMIT-REQ"
+      ]
+    },
+    {
+      "id": "story",
+      "title": "Довод для продажи",
+      "duty": "Найти каждый пробел или противоречие в доводах, которые нужны владельцу магазина, чтобы решиться размещать велосипеды на площадке.",
+      "procedure": [
+        "Read the deck in order as a shop owner who has never heard of the marketplace, and write down the question each slide answers.",
+        "Note which questions a shop owner would ask that no slide answers (cost, effort, results, contract terms).",
+        "Check that the customer examples support the claims they are attached to.",
+        "Check that the last slide gives a clear next step."
+      ],
+      "checklist": [
+        "Does the deck answer what the shop owner gets, what it costs and what effort it takes?",
+        "Do the customer examples support the claims next to them?",
+        "Is the order of slides logical?",
+        "Is there a clear call to action with contact details?",
+        "Do any two slides contradict each other?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Every slide in order.",
+          "kind": "all-files",
+          "glob": "**/slides/*.png"
+        },
+        {
+          "id": "M2",
+          "rule": "The speaker notes in full.",
+          "kind": "all-files",
+          "glob": "**/notes.md"
+        }
+      ],
+      "canaryTypes": [
+        "CONTRA",
+        "PATH",
+        "FACT-CLAIM"
+      ]
+    },
+    {
+      "id": "generalist",
+      "title": "Первый читатель",
+      "duty": "Прочитать всю работу как человек, у которого есть только задание владельца, и найти, где работа не даёт того, что просили, трудна для понимания или в ней нет чего-то нужного.",
+      "procedure": [
+        "Read the owner's task and list everything it asks for.",
+        "Read every file of the work once, start to end.",
+        "For each thing the task asks for, find where the work delivers it, and note what is missing or only partly there."
+      ],
+      "checklist": [
+        "Is every requirement of the task delivered?",
+        "Is the slide count right?",
+        "Do the parts of the work agree with each other?",
+        "Is anything required missing?",
+        "Is anything confusing on first reading?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Read every file once, start to end.",
+          "kind": "all-files",
+          "glob": "**/*"
+        }
+      ],
+      "canaryTypes": [
+        "OMIT-REQ",
+        "BRIEF"
+      ]
+    }
+  ]
+}

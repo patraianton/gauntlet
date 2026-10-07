@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "taskSha256": "93febe33ecc7e0dd8b0177019fd71a1d79f6e1677bf229b39715c134053f8bc5",
+  "requirements": [
+    {
+      "id": "R01",
+      "text": "План охватывает первые три месяца доставки на дом.",
+      "taskQuote": "Write a marketing plan for the first three months.",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R02",
+      "text": "Все траты, включая платную рекламу, укладываются в 3000 EUR.",
+      "taskQuote": "The total budget is 3000 EUR including any paid ads.",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R03",
+      "text": "Каждый канал указан со своей стоимостью и причиной, зачем он нужен.",
+      "taskQuote": "Show which channels we use, what each costs and why.",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R04",
+      "text": "Календарь по неделям на первый месяц и план по месяцам на второй и третий.",
+      "taskQuote": "Give a week-by-week calendar for the first month and a month-by-month plan after that.",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R05",
+      "text": "План говорит, как заказы относятся к каждому каналу.",
+      "taskQuote": "Say how we will count orders that came from each channel.",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R06",
+      "text": "Каждый текст для покупателей есть на английском и на испанском.",
+      "taskQuote": "Everything customers see must exist in English and Spanish.",
+      "ifMissing": "blocker"
+    }
+  ],
+  "lenses": [
+    {
+      "id": "budget",
+      "title": "Бюджет, числа и учёт",
+      "duty": "Найти каждую неверную сумму, стоимость, дату или количество, каждую трату сверх бюджета и каждый канал, заказы из которого нельзя посчитать так, как написано.",
+      "procedure": [
+        "List every cost in the plan, the calendar and the budget table, and add them up per month and in total.",
+        "Compare each total with the budget in the task and with every other place the same total is stated.",
+        "Check every date and weekday of the calendar against a real calendar for the launch months.",
+        "For each channel, follow the described way of counting orders step by step and note where an order would not be attributed or would be counted twice.",
+        "Check prices and audience numbers against the primary sources and record each command."
+      ],
+      "checklist": [
+        "Do the costs add up to the stated totals, and does the total stay within the budget including ads?",
+        "Is every number stated the same way in every place it appears?",
+        "Are dates and weekdays correct?",
+        "Can orders from each channel actually be counted as described (codes, link tags, questions at checkout)?",
+        "Are prices, reach and audience figures supported by a source?",
+        "Is there a rule for what to do when a channel costs more than it brings?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Every line of the budget table, recomputed.",
+          "kind": "all-files",
+          "glob": "**/*.csv"
+        },
+        {
+          "id": "M2",
+          "rule": "Every week of the calendar: dates, channel, cost.",
+          "kind": "all-entries",
+          "glob": "**/calendar.json",
+          "pointer": "/weeks"
+        },
+        {
+          "id": "M3",
+          "rule": "Check prices and audience figures against the sources.",
+          "kind": "source-check",
+          "sourceId": "S1",
+          "count": 3
+        }
+      ],
+      "canaryTypes": [
+        "FACT-NUM",
+        "CONTRA"
+      ]
+    },
+    {
+      "id": "channels",
+      "title": "Каналы и выполнимость",
+      "duty": "Найти каждый канал, действие или срок в плане, которые не сработают для маленькой пекарни в Спрингфилде с этим бюджетом и этими людьми, и каждый разрыв между планом и его заявленной целью.",
+      "procedure": [
+        "Write down the goal and the audience the plan states, then list every channel with what it is expected to bring.",
+        "For each channel, check who does the work, when, with what material, and whether the timeline in the calendar allows it.",
+        "Compare the channel mix with the audience: language, district, age, how they order food today.",
+        "Read the plan for months two and three and check that each step follows from what month one is meant to show."
+      ],
+      "checklist": [
+        "Does every channel have an owner, a schedule and the material it needs?",
+        "Is the channel mix right for the stated audience and languages?",
+        "Can each step be done in the time the calendar gives it?",
+        "Do months two and three depend on results that month one actually measures?",
+        "Is anything the task asks for missing from the plan?",
+        "Are there contradictions between the plan text and the calendar?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "The whole plan text.",
+          "kind": "all-files",
+          "glob": "**/plan.md"
+        },
+        {
+          "id": "M2",
+          "rule": "Every channel: cost, owner, expected result.",
+          "kind": "all-entries",
+          "glob": "**/channels.json",
+          "pointer": "/channels"
+        },
+        {
+          "id": "M3",
+          "rule": "Every week of the calendar.",
+          "kind": "all-entries",
+          "glob": "**/calendar.json",
+          "pointer": "/weeks"
+        }
+      ],
+      "canaryTypes": [
+        "BRIEF",
+        "OMIT-REQ",
+        "CONTRA"
+      ]
+    },
+    {
+      "id": "language",
+      "title": "Тексты на английском и испанском",
+      "duty": "Найти каждую языковую ошибку, которую заметит носитель языка в текстах для покупателей, и каждый текст, которого нет на одном из языков или который на нём говорит другое.",
+      "procedure": [
+        "List every customer-facing text in the plan, the calendar and the visuals.",
+        "For each one, find its English and its Spanish version and compare their meaning.",
+        "Read each version sentence by sentence for grammar, spelling, diacritics and natural wording.",
+        "Read the text on every visual."
+      ],
+      "checklist": [
+        "Does every customer-facing text exist in both languages?",
+        "Do the two versions say the same thing, including prices and dates?",
+        "Are grammar, cases, diacritics and spelling correct?",
+        "Is the form of address the same everywhere?",
+        "Are names of products and the bakery spelled the same everywhere?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Every customer-facing sentence in the plan.",
+          "kind": "all-files",
+          "glob": "**/plan.md"
+        },
+        {
+          "id": "M2",
+          "rule": "The text on every visual.",
+          "kind": "all-files",
+          "glob": "**/*.png"
+        }
+      ],
+      "canaryTypes": [
+        "LANG",
+        "OMIT-REQ"
+      ]
+    },
+    {
+      "id": "claims",
+      "title": "Заявления, закон и правила площадок",
+      "duty": "Найти каждое заявление для покупателей, которое неверно или ничем не подтверждено, каждое обещание, которое пекарня не сможет выполнить, и каждое противоречие закону о рекламе или правилам площадок.",
+      "procedure": [
+        "List every claim the plan makes to customers: prices, delivery times, discounts, ingredients, comparisons.",
+        "Check each claim against the primary sources and the author's notes, treating the notes as hints only.",
+        "Check promotions, contests and discounts against local advertising and consumer rules and the rules of each platform used."
+      ],
+      "checklist": [
+        "Is every customer-facing claim true and supported by a source?",
+        "Can the bakery keep every promise (delivery times, areas, prices)?",
+        "Do contests and discounts follow advertising and consumer rules?",
+        "Do paid ads and posts follow each platform's rules?",
+        "Are required caveats present (terms of a discount, delivery area, allergens where relevant)?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Every claim in the plan text.",
+          "kind": "all-files",
+          "glob": "**/plan.md"
+        },
+        {
+          "id": "M2",
+          "rule": "The author's notes in full, as claims to check.",
+          "kind": "all-files",
+          "glob": "**/AUTHOR-NOTES.md"
+        },
+        {
+          "id": "M3",
+          "rule": "Check delivery terms and prices against the shop source.",
+          "kind": "source-check",
+          "sourceId": "S1",
+          "count": 2
+        }
+      ],
+      "canaryTypes": [
+        "FACT-CLAIM",
+        "POLICY",
+        "OMIT-CAVEAT"
+      ]
+    },
+    {
+      "id": "generalist",
+      "title": "Первый читатель",
+      "duty": "Прочитать всю работу как человек, у которого есть только задание владельца, и найти, где работа не даёт того, что просили, трудна для понимания или в ней нет чего-то нужного.",
+      "procedure": [
+        "Read the owner's task and list everything it asks for.",
+        "Read every file of the work once, start to end.",
+        "For each thing the task asks for, find where the work delivers it, and note what is missing or only partly there.",
+        "Note everything that is confusing, contradictory or unexplained on first reading."
+      ],
+      "checklist": [
+        "Is every requirement of the task delivered?",
+        "Could the owner start working from this plan tomorrow?",
+        "Do the parts of the work agree with each other?",
+        "Is anything required missing?",
+        "Is anything confusing or unexplained on first reading?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Read every file once, start to end.",
+          "kind": "all-files",
+          "glob": "**/*"
+        }
+      ],
+      "canaryTypes": [
+        "OMIT-REQ",
+        "BRIEF"
+      ]
+    }
+  ]
+}

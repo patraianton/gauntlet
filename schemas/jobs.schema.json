@@ -1,0 +1,164 @@
+{
+  "$id": "gauntlet/jobs.schema.json",
+  "description": "jobs.json per round (SPEC 9.8). Lives in the run folder; agents never see it. Role \"lens-writer\" is accepted for the setup job.json.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "round",
+    "jobs"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "round": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "jobs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "job",
+          "role",
+          "dir",
+          "promptSha256",
+          "schemaName",
+          "nonce",
+          "status"
+        ],
+        "properties": {
+          "job": {
+            "type": "string",
+            "pattern": "^[a-z2-9]{8}$"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "lens-writer",
+              "planter",
+              "validator",
+              "reviewer",
+              "matcher",
+              "verifier",
+              "dispute",
+              "decoy"
+            ]
+          },
+          "lens": {
+            "type": "string"
+          },
+          "attempt": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2
+          },
+          "batch": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "verifierPass": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+          },
+          "dir": {
+            "type": "string",
+            "minLength": 1
+          },
+          "promptSha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "schemaName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "model": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nonce": {
+            "type": "string",
+            "pattern": "^PL-[A-Z2-9]{4}-[A-Z2-9]{4}$"
+          },
+          "challenges": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "kind"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^Q[0-9]+$"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "line",
+                    "count"
+                  ]
+                },
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "expectedSha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "glob": {
+                  "type": "string"
+                },
+                "pointer": {
+                  "type": "string"
+                },
+                "expected": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "answered",
+              "missing",
+              "given-up"
+            ]
+          },
+          "issuedAt": {
+            "type": "string",
+            "description": "when the job was issued (ISO 8601, local time); with answeredAt it tells which jobs were running when a file in the review copy changed"
+          },
+          "answeredAt": {
+            "type": "string",
+            "description": "when the agent finished writing answer.json (its file time, ISO 8601, local time)"
+          },
+          "answerSha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "tokens": {
+            "type": "number",
+            "minimum": 0
+          },
+          "tokensEstimated": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

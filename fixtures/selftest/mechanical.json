@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "checks": [
+    { "id": "K1", "what": "plan.json is valid JSON", "severity": "blocker", "kind": "json-valid", "glob": "content/plan.json" },
+    { "id": "K2", "what": "the plan has exactly 12 posts", "severity": "blocker", "kind": "count", "glob": "content/plan.json", "pointer": "/posts", "op": "=", "value": 12 }
+  ]
+}

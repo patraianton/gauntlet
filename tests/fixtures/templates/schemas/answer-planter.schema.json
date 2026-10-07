@@ -1,0 +1,101 @@
+{
+  "description": "Test double written by P5 from SPEC 9.9/9.6; the real schema lives in schemas/ (P1).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "nonce",
+    "candidates",
+    "incidental"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "nonce": {
+      "type": "string",
+      "pattern": "^PL-[A-Z2-9]{4}-[A-Z2-9]{4}$"
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "slot",
+          "alt",
+          "file",
+          "locator",
+          "before",
+          "after",
+          "description",
+          "howProvable",
+          "intendedSeverity"
+        ],
+        "properties": {
+          "slot": {
+            "type": "string",
+            "pattern": "^S[0-9]+$"
+          },
+          "alt": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2
+          },
+          "file": {
+            "type": "string",
+            "minLength": 1
+          },
+          "locator": {
+            "type": "string",
+            "minLength": 1
+          },
+          "before": {
+            "type": "string",
+            "minLength": 3
+          },
+          "after": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "howProvable": {
+            "type": "string",
+            "minLength": 1
+          },
+          "intendedSeverity": {
+            "type": "string",
+            "enum": [
+              "blocker",
+              "major"
+            ]
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "incidental": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "file",
+          "locator",
+          "note"
+        ],
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "locator": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

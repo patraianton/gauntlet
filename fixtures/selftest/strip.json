@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "excludeGlobs": ["**/*FEEDBACK*.md"],
+  "regex": [
+    {
+      "glob": "content/page.md",
+      "pattern": "<!-- draft note:.*?-->\n?",
+      "flags": "s",
+      "replace": "",
+      "expect": "atLeastOne",
+      "why": "draft notes in the page talk about earlier review work"
+    }
+  ],
+  "traceAllow": []
+}

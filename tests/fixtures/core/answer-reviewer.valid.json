@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "nonce": "PL-AB2C-D3EF",
+  "instructionReceived": "Read the file D:/work/job-7/PROMPT.md and do exactly what it says. Do not read anything else before it. When finished, reply with DONE followed by the answer code the check printed, and nothing else.",
+  "receipt": [
+    {
+      "id": "Q1",
+      "answer": "Цена: 49 €"
+    },
+    {
+      "id": "Q2",
+      "answer": "12"
+    },
+    {
+      "id": "Q3",
+      "answer": "Пост 7"
+    }
+  ],
+  "inspected": [
+    {
+      "minimumId": "M1",
+      "done": true,
+      "how": "read every post in content/plan.json"
+    }
+  ],
+  "sourceChecks": [
+    {
+      "sourceId": "S1",
+      "command": "curl -s https://example.com/prices",
+      "result": "49 EUR"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "R01",
+      "status": "partial",
+      "where": "content/plan.json posts 1-12",
+      "note": "post 7 has no call to action"
+    }
+  ],
+  "findings": [
+    {
+      "n": 1,
+      "severity": "major",
+      "kind": "number",
+      "location": {
+        "file": "content/page.md",
+        "locator": "line 14"
+      },
+      "quote": "итого 120 €",
+      "problem": "3 × 49 is 147, not 120",
+      "fix": "write 147 €"
+    },
+    {
+      "n": 2,
+      "severity": "blocker",
+      "kind": "omission",
+      "location": {
+        "file": "content/plan.json",
+        "locator": "/posts/6"
+      },
+      "quote": null,
+      "missingWhat": "call to action in post 7",
+      "problem": "required call to action is absent",
+      "fix": "add the CTA"
+    }
+  ],
+  "notVerified": [
+    {
+      "claim": "the price on the live site",
+      "whereLooked": "S1 output"
+    }
+  ],
+  "notChecked": [],
+  "score": 9.5
+}

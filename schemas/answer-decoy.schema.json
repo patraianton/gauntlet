@@ -1,0 +1,108 @@
+{
+  "$id": "gauntlet/answer-decoy.schema.json",
+  "description": "Decoy writer answer: reports of problems that are not real, mixed by code into verifier batches (SPEC 14.11).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "nonce",
+    "decoys",
+    "incidental"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "nonce": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decoys": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "file",
+          "locator",
+          "quote",
+          "missingWhat",
+          "claim",
+          "claimedSeverity",
+          "whyFalse",
+          "proofFile",
+          "proofQuote"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "quote",
+              "missing"
+            ]
+          },
+          "file": {
+            "type": "string",
+            "minLength": 1
+          },
+          "locator": {
+            "type": "string"
+          },
+          "quote": {
+            "type": "string"
+          },
+          "missingWhat": {
+            "type": "string"
+          },
+          "claim": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 280
+          },
+          "claimedSeverity": {
+            "type": "string",
+            "enum": [
+              "blocker",
+              "major"
+            ]
+          },
+          "whyFalse": {
+            "type": "string",
+            "minLength": 20
+          },
+          "proofFile": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proofQuote": {
+            "type": "string",
+            "minLength": 12
+          }
+        }
+      }
+    },
+    "incidental": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "file",
+          "locator",
+          "note"
+        ],
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "locator": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

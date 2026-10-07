@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "taskSha256": "7e7a603a3298e7a0e9a1a7489bfc9b2d2e1f31fb4201343506d1374aafa99d4b",
+  "requirements": [
+    {
+      "id": "R01",
+      "text": "На странице есть заголовок, три блока о выгодах, раздел вопросов и ответов не меньше чем из шести вопросов и тексты кнопок.",
+      "taskQuote": "a headline, three benefit blocks, an FAQ with at least six questions, and the button texts",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R02",
+      "text": "Есть английская и испанская версии, и они значат одно и то же.",
+      "taskQuote": "English and Spanish versions with the same meaning.",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R03",
+      "text": "Тексты называют цену 25 EUR за проверку и отправку отчёта по e-mail в течение суток и не обещают ничего сверх этого.",
+      "taskQuote": "The price is 25 EUR per check and the report comes by e-mail within one day; do not promise anything else.",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R04",
+      "text": "Страница ведёт людей к заказу проверки.",
+      "taskQuote": "The page must lead people to order a check.",
+      "ifMissing": "blocker"
+    }
+  ],
+  "lenses": [
+    {
+      "id": "promises",
+      "title": "Обещания и факты",
+      "duty": "Найти каждое обещание, цену, срок или факт в текстах, который расходится с заданием или который сервис не сможет выполнить.",
+      "procedure": [
+        "List every promise and fact in every text: price, delivery time, delivery channel, what the report contains, guarantees.",
+        "Compare each one with the task line about price and timing and with the service page source.",
+        "Mark every promise that goes beyond what the task allows, even if it sounds harmless.",
+        "Check that the same price and time are stated the same way in every block, both languages."
+      ],
+      "checklist": [
+        "Is the price 25 EUR everywhere it appears?",
+        "Is the delivery time one day by e-mail everywhere?",
+        "Does any text promise something the task does not allow (guarantees, refunds, accuracy, other channels)?",
+        "Does any FAQ answer contradict a benefit block?",
+        "Are required caveats present where a claim needs one?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Every sentence of both landing texts.",
+          "kind": "all-files",
+          "glob": "**/landing.*.md"
+        },
+        {
+          "id": "M2",
+          "rule": "Every FAQ answer in both languages.",
+          "kind": "all-entries",
+          "glob": "**/faq.json",
+          "pointer": "/questions"
+        },
+        {
+          "id": "M3",
+          "rule": "Compare price and timing with the live service page.",
+          "kind": "source-check",
+          "sourceId": "S1",
+          "count": 1
+        }
+      ],
+      "canaryTypes": [
+        "FACT-NUM",
+        "FACT-CLAIM",
+        "BRIEF"
+      ]
+    },
+    {
+      "id": "language",
+      "title": "Английский и испанский язык",
+      "duty": "Найти каждую ошибку в грамматике, правописании, ударениях и диакритике или выборе слов, которую заметит носитель английского или испанского языка.",
+      "procedure": [
+        "Read the Spanish text sentence by sentence: gender and number agreement, accents, verb forms, prepositions.",
+        "Read the English text the same way.",
+        "Read every button text and FAQ question as a short phrase a native speaker would write.",
+        "Check terms and the form of address across all texts."
+      ],
+      "checklist": [
+        "Are agreement, accents and verb forms correct?",
+        "Do the texts read naturally, without calques?",
+        "Is the same term used for the same thing everywhere?",
+        "Is the form of address the same everywhere?",
+        "Are button texts short, clear and grammatical?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Every sentence of both landing texts.",
+          "kind": "all-files",
+          "glob": "**/landing.*.md"
+        },
+        {
+          "id": "M2",
+          "rule": "Every FAQ question and answer.",
+          "kind": "all-entries",
+          "glob": "**/faq.json",
+          "pointer": "/questions"
+        },
+        {
+          "id": "M3",
+          "rule": "Every button text in both languages.",
+          "kind": "all-entries",
+          "glob": "**/buttons.json",
+          "pointer": "/buttons"
+        }
+      ],
+      "canaryTypes": [
+        "LANG"
+      ]
+    },
+    {
+      "id": "parity",
+      "title": "Одинаковый смысл на двух языках",
+      "duty": "Найти каждое место, где английская и испанская версии расходятся по смыслу, числам, построению или полноте.",
+      "procedure": [
+        "Put the English and Spanish landing texts side by side, block by block.",
+        "For each block, compare meaning, numbers, names and calls to action.",
+        "Compare every FAQ question and answer pair and every button text pair the same way.",
+        "List every block, question or button that exists in only one language."
+      ],
+      "checklist": [
+        "Does every block exist in both languages?",
+        "Do numbers, prices and times match between the languages?",
+        "Does each pair say the same thing, without additions or omissions?",
+        "Do the buttons lead to the same action in both languages?",
+        "Are names and terms consistent between the languages?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Both landing texts, side by side, block by block.",
+          "kind": "all-files",
+          "glob": "**/landing.*.md"
+        },
+        {
+          "id": "M2",
+          "rule": "Every FAQ pair.",
+          "kind": "all-entries",
+          "glob": "**/faq.json",
+          "pointer": "/questions"
+        },
+        {
+          "id": "M3",
+          "rule": "Every button pair.",
+          "kind": "all-entries",
+          "glob": "**/buttons.json",
+          "pointer": "/buttons"
+        }
+      ],
+      "canaryTypes": [
+        "CONTRA",
+        "OMIT-REQ"
+      ]
+    },
+    {
+      "id": "path",
+      "title": "Путь к заказу",
+      "duty": "Найти каждое место, где посетитель, который хочет проверку, не видит, как её заказать, или получает повод не заказывать.",
+      "procedure": [
+        "Read the page as a visitor who wants a check, from the headline to the last button.",
+        "Note where the first call to order appears and where each button leads according to the texts.",
+        "Read the FAQ as a doubtful visitor and note every objection left unanswered.",
+        "Check that every button text matches the action described next to it."
+      ],
+      "checklist": [
+        "Is it clear within the first screen what the service is and how to order it?",
+        "Does every block end with a clear next step?",
+        "Do button texts match the action they lead to?",
+        "Does the FAQ answer price, time, what the report contains and how to pay?",
+        "Is there anything that would stop a visitor from ordering?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Both landing texts as a visitor reads them.",
+          "kind": "all-files",
+          "glob": "**/landing.*.md"
+        },
+        {
+          "id": "M2",
+          "rule": "Every button and where it leads.",
+          "kind": "all-entries",
+          "glob": "**/buttons.json",
+          "pointer": "/buttons"
+        }
+      ],
+      "canaryTypes": [
+        "PATH",
+        "OMIT-REQ"
+      ]
+    },
+    {
+      "id": "generalist",
+      "title": "Первый читатель",
+      "duty": "Прочитать всю работу как человек, у которого есть только задание владельца, и найти, где работа не даёт того, что просили, трудна для понимания или в ней нет чего-то нужного.",
+      "procedure": [
+        "Read the owner's task and list everything it asks for.",
+        "Read every file of the work once, start to end.",
+        "For each thing the task asks for, find where the work delivers it, and note what is missing or only partly there."
+      ],
+      "checklist": [
+        "Is every element the task lists present?",
+        "Is anything confusing on first reading?",
+        "Do the parts of the work agree with each other?",
+        "Is anything required missing?",
+        "Would the owner be able to publish this as it is?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Read every file once, start to end.",
+          "kind": "all-files",
+          "glob": "**/*"
+        }
+      ],
+      "canaryTypes": [
+        "OMIT-REQ",
+        "BRIEF"
+      ]
+    }
+  ]
+}

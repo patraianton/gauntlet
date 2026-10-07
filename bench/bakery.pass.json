@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "description": "Pass rule of the bench (runbook 7.2 step 8), applied by `report <run> --bench <this file>`. comparable: canaries that a blind check of the same material caught (each must be caught by its own lens); hinted: canaries the lens checklists point at (at least hintedMin caught by their own lens); falseFindings: quotes of two claims a blind check wrongly flagged as errors, which must not end open.",
+  "comparable": ["C1", "C2"],
+  "hinted": ["C3", "C4", "C5"],
+  "hintedMin": 2,
+  "falseFindings": ["36 hours", "Pick-up is free"]
+}

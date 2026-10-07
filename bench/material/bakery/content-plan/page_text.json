@@ -1,0 +1,75 @@
+{
+  "strategy": [
+    {
+      "heading": "Where the first followers will come from",
+      "items": [
+        "• Reels (8 pieces).",
+        "• Carousels worth saving (10 pieces).",
+        "• Single photos on Saturdays (8 pieces).",
+        "• Neighbours who pick up their boxes and tag the bakery."
+      ]
+    },
+    {
+      "heading": "Rhythm",
+      "items": [
+        "• Six posts a week, Monday to Saturday, at 7:30 a.m.",
+        "• Thirty posts in five weeks, from 2 November 2026.",
+        "• Every post ends with one clear next step: the pre-order link or the word LOAF in a direct message."
+      ]
+    },
+    {
+      "heading": "Targets and review",
+      "items": [
+        "• 300 followers and 40 Loaf Box pre-orders by the end of week five.",
+        "• If fewer than 15 pre-orders come in by the end of week three, move one reel a week to the Loaf Box rubric."
+      ]
+    }
+  ],
+  "samples": [
+    {
+      "post": 1,
+      "caption": "Five a.m. and the first loaf is out. Watch the whole bake, then pre-order your own box at crumbandco.example/pre-order"
+    },
+    {
+      "post": 2,
+      "caption": "Ola has shaped 40,000 loaves and still checks every one. Say hello in the comments."
+    },
+    {
+      "post": 3,
+      "caption": "Four fresh loaves, every Saturday.\nOrder at crumbandco.example/preorder\nThe box closes on Thursday at 8 pm."
+    },
+    {
+      "post": 4,
+      "caption": "Loaf Box 14.80 € + jam 3.50 € + delivery 2.00 € = 21.30 € — that is the whole bill.\nPre-order at crumbandco.example/pre-order"
+    },
+    {
+      "post": 5,
+      "caption": "Our sourdough rests for 36 hours before it meets the oven. Pre-order at crumbandco.example/pre-order"
+    },
+    {
+      "post": 6,
+      "caption": "Cinnamon buns, Saturday only, 2.40 € each. Pre-order at crumbandco.example/pre-order"
+    },
+    {
+      "post": 7,
+      "caption": "At 4 a.m. the oven tells us it is ready. We believe it. Sometimes."
+    },
+    {
+      "post": 8,
+      "caption": "Everyone love a warm loaf on Sunday. Ours is baked on Saturday night, so it is still soft at the table."
+    }
+  ],
+  "decide": [
+    "Do you want Ola named and shown in the posts?",
+    "Which slide design do you choose: B1, B2 or B3 (they differ only in layout)?",
+    "May we show regular customers, with their written permission?",
+    "Is Thursday 8 pm the right closing time for a Saturday box?"
+  ],
+  "rules": [
+    "Prices are always taken from the price list, never from memory.",
+    "A customer is shown only with written permission.",
+    "The only pre-order link is crumbandco.example/pre-order.",
+    "The Loaf Box closes on Thursday at 8 pm.",
+    "No claim about health, allergies or \"the best bread in town\"."
+  ]
+}

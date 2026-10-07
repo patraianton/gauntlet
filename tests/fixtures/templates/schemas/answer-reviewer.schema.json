@@ -1,0 +1,254 @@
+{
+  "description": "Test double written by P5 from SPEC 9.9/9.6; the real schema lives in schemas/ (P1).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "nonce",
+    "receipt",
+    "inspected",
+    "sourceChecks",
+    "requirements",
+    "findings",
+    "notVerified",
+    "notChecked"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "nonce": {
+      "type": "string",
+      "pattern": "^PL-[A-Z2-9]{4}-[A-Z2-9]{4}$"
+    },
+    "receipt": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "answer"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^Q[0-9]+$"
+          },
+          "answer": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "inspected": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "minimumId",
+          "done",
+          "how"
+        ],
+        "properties": {
+          "minimumId": {
+            "type": "string",
+            "pattern": "^M[0-9]{1,2}$"
+          },
+          "done": {
+            "type": "boolean"
+          },
+          "how": {
+            "type": "string",
+            "minLength": 10
+          }
+        }
+      }
+    },
+    "sourceChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "sourceId",
+          "command",
+          "result"
+        ],
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "pattern": "^S[0-9]{1,2}$"
+          },
+          "command": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "where"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^R[0-9]{2}$"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "present",
+              "partial",
+              "absent",
+              "cannot-tell"
+            ]
+          },
+          "where": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "n",
+          "severity",
+          "kind",
+          "location",
+          "quote",
+          "problem",
+          "fix"
+        ],
+        "properties": {
+          "n": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "blocker",
+              "major",
+              "cosmetic"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "fact",
+              "number",
+              "contradiction",
+              "language",
+              "path",
+              "policy",
+              "omission",
+              "visual",
+              "brief",
+              "other"
+            ]
+          },
+          "location": {
+            "type": "object",
+            "required": [
+              "file",
+              "locator"
+            ],
+            "properties": {
+              "file": {
+                "type": "string",
+                "minLength": 1
+              },
+              "locator": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "quote": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "quote2": {
+            "type": "string"
+          },
+          "seen": {
+            "type": "string"
+          },
+          "missingWhat": {
+            "type": "string"
+          },
+          "problem": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fix": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence": {
+            "type": "string"
+          },
+          "severityWhy": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "notVerified": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "claim",
+          "whereLooked"
+        ],
+        "properties": {
+          "claim": {
+            "type": "string",
+            "minLength": 1
+          },
+          "whereLooked": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "notChecked": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "what",
+          "why"
+        ],
+        "properties": {
+          "what": {
+            "type": "string",
+            "minLength": 1
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

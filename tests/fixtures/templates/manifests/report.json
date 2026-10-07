@@ -1,0 +1,11 @@
+{
+  "description": "Fake material file list (copy-relative paths) used to test lens coverage of the library example.",
+  "files": [
+    "content/charts/by-channel.png",
+    "content/charts/by-country.png",
+    "content/data/signups-august.csv",
+    "content/data/signups-september.csv",
+    "content/method.md",
+    "content/report.md"
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "$id": "gauntlet/m-canary.schema.json",
+  "description": "measurements/canaries.jsonl row (SPEC 14.7): one line per canary.",
+  "type": "object",
+  "required": [
+    "runId",
+    "canary",
+    "type"
+  ],
+  "properties": {
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "round": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "roundKind": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "purpose": {
+      "type": "string",
+      "enum": [
+        "attention",
+        "measurement"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "targetLens": {
+      "type": [
+        "object",
+        "string",
+        "null"
+      ]
+    },
+    "band": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "start",
+        "middle",
+        "end",
+        null
+      ]
+    },
+    "positionFraction": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "intendedSeverity": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "validatorSeverity": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "planterModel": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "planterIndependent": {
+      "type": "boolean"
+    },
+    "prePlanted": {
+      "type": "boolean"
+    },
+    "artifactType": {
+      "type": "string"
+    },
+    "instrumentId": {
+      "type": "string"
+    },
+    "materialChars": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "contaminated": {
+      "type": "boolean"
+    },
+    "legacyId": {
+      "type": "string"
+    }
+  }
+}

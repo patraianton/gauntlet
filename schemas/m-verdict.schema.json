@@ -1,0 +1,97 @@
+{
+  "$id": "gauntlet/m-verdict.schema.json",
+  "description": "measurements/verdicts.jsonl row (SPEC 14.7): one line per verified item.",
+  "type": "object",
+  "required": [
+    "runId",
+    "round",
+    "claimedSeverity",
+    "finalStatus"
+  ],
+  "properties": {
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "round": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "roundKind": {
+      "type": "string",
+      "enum": [
+        "working",
+        "confirm"
+      ]
+    },
+    "clusterOrigin": {
+      "type": "string",
+      "enum": [
+        "finding",
+        "requirement",
+        "incidental"
+      ]
+    },
+    "claimedSeverity": {
+      "type": "string",
+      "enum": [
+        "blocker",
+        "major",
+        "cosmetic"
+      ]
+    },
+    "finalStatus": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "open",
+        "cosmetic",
+        "dropped",
+        "closed",
+        "waived",
+        "unverified",
+        "contested"
+      ]
+    },
+    "finalSeverity": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "blocker",
+        "major",
+        "cosmetic",
+        null
+      ]
+    },
+    "verdicts": {
+      "type": "array",
+      "items": {
+        "type": [
+          "string",
+          "object"
+        ]
+      }
+    },
+    "lenses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "nFinders": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "kind": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "grounded": {
+      "type": "boolean"
+    }
+  }
+}

@@ -1,0 +1,359 @@
+{
+  "schemaVersion": 1,
+  "taskSha256": "98ef28135f0b0e1efbc33215c95fbe6b916f520d2d32957a71c8fda5187e6636",
+  "requirements": [
+    {
+      "id": "R01",
+      "text": "В контент-плане 30 постов.",
+      "taskQuote": "content plan of 30 posts",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R02",
+      "text": "Главная цель плана — предзаказы недельного набора хлеба (Loaf Box).",
+      "taskQuote": "pre-orders of the weekly Loaf Box",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R03",
+      "text": "В плане есть хорошие посты о том, как пекут хлеб.",
+      "taskQuote": "Make good how-we-bake posts",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R04",
+      "text": "Посты ведут людей на страницу предзаказа.",
+      "taskQuote": "send people to the pre-order page",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R05",
+      "text": "Предложено несколько вариантов дизайна слайдов на выбор.",
+      "taskQuote": "a few slide designs to choose from",
+      "ifMissing": "blocker"
+    }
+  ],
+  "lenses": [
+    {
+      "id": "growth",
+      "title": "Рост нового аккаунта",
+      "duty": "Найти, что помешает этому плану вырастить совсем новый аккаунт Instagram маленькой пекарни (ни одного поста, несколько подписчиков) и удерживать аудиторию пять недель.",
+      "procedure": [
+        "Read the strategy section of the owner's page in full and write down the formats, frequency, rubrics, targets and review rules it promises.",
+        "Walk through all 30 posts in order (date, format, rubric, hook) and count reels, carousels and single posts; compare the counts with what the strategy promises.",
+        "Read the hooks and look at the slides as a stranger scrolling the feed would, and note which would not stop the scroll.",
+        "Check how the first two weeks are supposed to reach people with zero followers: hashtags, places, collaborations, stories, pinned posts.",
+        "Compare every number in the strategy (counts of posts, reels, targets, dates) with the plan itself and with the samples; a number stated in two places must agree."
+      ],
+      "checklist": [
+        "Will the plan grow a new account and keep people for five weeks?",
+        "Is the mix of reels, carousels and single posts, the frequency and the posting time stated and followed?",
+        "Are hooks and covers strong, and are the recurring rubrics varied enough across all 30 posts?",
+        "How does the account get reach in its first two weeks from zero (hashtags, places, joint posts, neighbours)?",
+        "Are the targets (followers, pre-orders) realistic, and is there a rule for revising the plan when they are missed?",
+        "Do different parts of the work contradict each other?",
+        "What is missing that a growth plan for a new account needs?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Every post: date, format, rubric and hook.",
+          "kind": "all-entries",
+          "glob": "**/plan.json",
+          "pointer": "/posts"
+        },
+        {
+          "id": "M2",
+          "rule": "The strategy section in full.",
+          "kind": "all-entries",
+          "glob": "**/page_text.json",
+          "pointer": "/strategy"
+        },
+        {
+          "id": "M3",
+          "rule": "Every sample caption in full.",
+          "kind": "all-entries",
+          "glob": "**/page_text.json",
+          "pointer": "/samples"
+        },
+        {
+          "id": "M4",
+          "rule": "Open at least 2 slide images, including B1.",
+          "kind": "action",
+          "glob": "**/render/out/*.png",
+          "count": 2
+        }
+      ],
+      "canaryTypes": [
+        "FACT-NUM",
+        "CONTRA",
+        "BRIEF"
+      ]
+    },
+    {
+      "id": "conversion",
+      "title": "Путь к предзаказу",
+      "duty": "Найти каждое место, где зритель, который хочет заказать набор хлеба, не может дойти от поста до страницы предзаказа или получает повод не заказывать.",
+      "procedure": [
+        "List every call to action of the plan: the cta and cta_text fields of every post, the sample captions, the owner page and the rules.",
+        "For each call to action, follow the path to the pre-order page step by step: which link, which word to write, which page; use the order-page source for the texts the browser renders.",
+        "Check that every call-to-action word and link is written the same way in every place it appears (posts, samples, the owner page, the rules).",
+        "Read the offer as a doubtful buyer: what is in the box, what does it cost in total, when does it close, how do I get it; note every objection the work leaves unanswered.",
+        "Check how pre-orders are counted and what happens when the owner answers his open questions in different ways."
+      ],
+      "checklist": [
+        "Are the offer and the answers to objections clear: contents, price, delivery or pick-up, closing time?",
+        "Does every call to action lead to a working pre-order page, and is its link spelled exactly like the real one?",
+        "Is every call-to-action word and link named identically everywhere it appears?",
+        "Is it defined how pre-orders are counted, with targets and a rule for changing the plan?",
+        "Are there proof posts (real customers, real boxes), and does the path to a pre-order work whatever the owner answers to his open questions?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Fields cta and cta_text of every post.",
+          "kind": "all-entries",
+          "glob": "**/plan.json",
+          "pointer": "/posts"
+        },
+        {
+          "id": "M2",
+          "rule": "Every sample caption, including its call to action.",
+          "kind": "all-entries",
+          "glob": "**/page_text.json",
+          "pointer": "/samples"
+        },
+        {
+          "id": "M3",
+          "rule": "The owner's page in full, including every link.",
+          "kind": "all-files",
+          "glob": "**/index.html"
+        },
+        {
+          "id": "M4",
+          "rule": "Open slides B1, B2 and B3.",
+          "kind": "action",
+          "glob": "**/render/out/*.png",
+          "count": 3
+        },
+        {
+          "id": "M5",
+          "rule": "The texts of the pre-order page as they are in the order-page source.",
+          "kind": "source-check",
+          "sourceId": "S2",
+          "count": 1
+        },
+        {
+          "id": "M6",
+          "rule": "The price list: box contents and closing time.",
+          "kind": "source-check",
+          "sourceId": "S1",
+          "count": 1
+        }
+      ],
+      "canaryTypes": [
+        "PATH",
+        "CONTRA",
+        "OMIT-REQ"
+      ]
+    },
+    {
+      "id": "copy",
+      "title": "Язык и единые формулировки",
+      "duty": "Найти каждую языковую ошибку в английских текстах и каждое место, где один и тот же факт назван по-разному.",
+      "procedure": [
+        "Read every hook and every sample caption sentence by sentence for grammar: agreement, tense, articles, punctuation.",
+        "Read the outline of every post for the same errors and for unclear wording.",
+        "Check the terms across the whole work: the same name for the same thing (Loaf Box, pre-order, pick-up), one style of quotation marks, one way to write prices.",
+        "Read the owner-facing text (what is needed from the owner, the rules) for plain wording without jargon."
+      ],
+      "checklist": [
+        "Grammar: agreement of subject and verb, tense, articles, plural forms.",
+        "Natural wording and consistent terms (Loaf Box, pre-order, pick-up, closing time).",
+        "Prices are written the same way everywhere.",
+        "The text for the owner is simple, without jargon.",
+        "Contradictions in meaning and promises the text makes to the reader."
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "hook and outline of every post.",
+          "kind": "all-entries",
+          "glob": "**/plan.json",
+          "pointer": "/posts"
+        },
+        {
+          "id": "M2",
+          "rule": "Every sample caption in full.",
+          "kind": "all-entries",
+          "glob": "**/page_text.json",
+          "pointer": "/samples"
+        },
+        {
+          "id": "M3",
+          "rule": "Every item of what is needed from the owner.",
+          "kind": "all-entries",
+          "glob": "**/page_text.json",
+          "pointer": "/decide"
+        },
+        {
+          "id": "M4",
+          "rule": "Every rule on the page.",
+          "kind": "all-entries",
+          "glob": "**/page_text.json",
+          "pointer": "/rules"
+        }
+      ],
+      "canaryTypes": [
+        "LANG",
+        "CONTRA"
+      ]
+    },
+    {
+      "id": "design",
+      "title": "Слайды на экране телефона",
+      "duty": "Найти каждую видимую на телефоне проблему слайдов: нечитаемый текст, сломанная вёрстка, пропавшие или разные элементы бренда.",
+      "procedure": [
+        "Open every slide image and look at it at phone size: text size, contrast, hierarchy, crop to 3:4 in the profile grid.",
+        "Put all slides of one design family side by side and compare them element by element: the footer, the logo, captions, prices and colours of each slide against its neighbours. A slide whose footer or logo differs from the others or is missing is a finding.",
+        "Compare the images on the owner's page with the slide images of the same name; note any image that differs or is not used.",
+        "Check whether the offered designs are really different options for the owner to choose from."
+      ],
+      "checklist": [
+        "Readability on a phone: text size and contrast.",
+        "Crop to 3:4 in the profile grid; hierarchy; the meaning of the brand colours.",
+        "Consistency across slides: the same footer, logo, fonts and captions on every slide of a design, checked side by side.",
+        "Are the offered design options really different from each other?",
+        "Quality and fit with the brand."
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Open every image and compare footers, logos and captions across all slides side by side.",
+          "kind": "all-files",
+          "glob": "**/*.png"
+        },
+        {
+          "id": "M2",
+          "rule": "The images as they are placed on the owner page.",
+          "kind": "all-files",
+          "glob": "**/index.html"
+        }
+      ],
+      "canaryTypes": [
+        "VISUAL",
+        "CONTRA",
+        "FACT-NUM"
+      ]
+    },
+    {
+      "id": "risk",
+      "title": "Факты, цены и выполнимость",
+      "duty": "Найти каждое неверное число или факт, каждое обещание, которое пекарня не сможет выполнить, и каждый пост, который нельзя сделать с имеющимися данными.",
+      "procedure": [
+        "Recompute every sum, price and count in the sample captions and in the outlines of the posts.",
+        "Check every price and the closing time against the price list, and the pre-order texts against the order-page source; record each command and its output.",
+        "Read the fields data and check of every post and mark the posts that need data or permissions that do not exist.",
+        "Read every promise about price, timing, delivery and quality against the sources and against ordinary advertising and consumer rules.",
+        "Check the plan's rules on photos of customers and on personal data."
+      ],
+      "checklist": [
+        "Photos of customers and personal data: is the plan's rule sound, and does every post that shows people have permission?",
+        "Advertising and consumer rules: claims about quality, health, allergies, delivery times, \"the best\".",
+        "Is every number in the sample captions and outlines correct against the price list?",
+        "Can each of the 30 posts be made with the data that exists?",
+        "Promises about deadlines and the condition of the goods; anything that could embarrass the brand."
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Recompute all arithmetic in the sample captions and in the outlines.",
+          "kind": "action"
+        },
+        {
+          "id": "M2",
+          "rule": "Check at least 3 prices from the plan against the price list, with the commands in your answer.",
+          "kind": "source-check",
+          "sourceId": "S1",
+          "count": 3
+        },
+        {
+          "id": "M3",
+          "rule": "Fields outline, data and check of every post.",
+          "kind": "all-entries",
+          "glob": "**/plan.json",
+          "pointer": "/posts"
+        },
+        {
+          "id": "M4",
+          "rule": "The pre-order page texts: price, delivery and closing time.",
+          "kind": "source-check",
+          "sourceId": "S2",
+          "count": 1
+        }
+      ],
+      "canaryTypes": [
+        "FACT-NUM",
+        "FACT-CLAIM",
+        "POLICY",
+        "OMIT-CAVEAT"
+      ]
+    },
+    {
+      "id": "generalist",
+      "title": "Первый читатель",
+      "duty": "Прочитать всю работу как человек, у которого есть только задание владельца, и найти, где работа не даёт того, что просили, трудна для понимания или в ней нет чего-то нужного.",
+      "procedure": [
+        "Read the owner's task and list everything it asks for.",
+        "Read the owner's page from start to end as the owner will read it, then the author's notes as claims to check.",
+        "For each thing the task asks for, find where the work delivers it, and note what is missing or only partly there.",
+        "Note everything that is confusing, contradictory or unexplained on first reading."
+      ],
+      "checklist": [
+        "Is every requirement of the task delivered?",
+        "Can the owner understand what to decide and what happens next?",
+        "Do the page, the plan and the slides agree with each other?",
+        "Is anything required missing?",
+        "Is anything confusing or unexplained on first reading?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "The owner's page in full.",
+          "kind": "all-files",
+          "glob": "**/index.html"
+        },
+        {
+          "id": "M2",
+          "rule": "The author's notes in full, as claims to check.",
+          "kind": "all-files",
+          "glob": "**/*.md"
+        },
+        {
+          "id": "M3",
+          "rule": "Every post: date, rubric and hook.",
+          "kind": "all-entries",
+          "glob": "**/plan.json",
+          "pointer": "/posts"
+        },
+        {
+          "id": "M4",
+          "rule": "Every part of the page texts.",
+          "kind": "all-files",
+          "glob": "**/page_text.json"
+        },
+        {
+          "id": "M5",
+          "rule": "Every other file of the work opened once: what it is and whether it belongs to the plan.",
+          "kind": "all-files",
+          "glob": "**/*"
+        }
+      ],
+      "canaryTypes": [
+        "OMIT-REQ",
+        "BRIEF",
+        "CONTRA"
+      ]
+    }
+  ]
+}

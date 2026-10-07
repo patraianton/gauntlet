@@ -1,0 +1,6 @@
+Pre-order page, crumbandco.example/pre-order
+
+Choose your box: Loaf Box (4 loaves) 14.80 EUR.
+Add-ons: jam jar 3.50 EUR.
+Delivery: 2.00 EUR per box. Pick-up is free.
+Orders close on Thursday at 8 pm for the Saturday box.

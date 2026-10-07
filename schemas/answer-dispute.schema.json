@@ -1,0 +1,61 @@
+{
+  "$id": "gauntlet/answer-dispute.schema.json",
+  "description": "Dispute verifier answer (SPEC 9.9).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "nonce",
+    "items"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "nonce": {
+      "type": "string",
+      "minLength": 1
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "item",
+          "outcome",
+          "severity",
+          "why"
+        ],
+        "properties": {
+          "item": {
+            "type": "string",
+            "pattern": "^D[0-9]+$"
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "upheld",
+              "reclassified",
+              "withdrawn"
+            ]
+          },
+          "severity": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "blocker",
+              "major",
+              "cosmetic",
+              null
+            ]
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

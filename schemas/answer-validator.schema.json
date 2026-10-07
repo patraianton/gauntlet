@@ -1,0 +1,79 @@
+{
+  "$id": "gauntlet/answer-validator.schema.json",
+  "description": "Canary validator answer (SPEC 9.9). Code keeps a candidate only if keep, originalCorrect, isDefect, provable, natural >= 3, no giveaway and severity >= the slot floor.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "nonce",
+    "verdicts"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "nonce": {
+      "type": "string",
+      "minLength": 1
+    },
+    "verdicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "slot",
+          "alt",
+          "originalCorrect",
+          "isDefect",
+          "provable",
+          "natural",
+          "giveaway",
+          "severity",
+          "keep",
+          "why"
+        ],
+        "properties": {
+          "slot": {
+            "type": "string",
+            "pattern": "^S[0-9]+$"
+          },
+          "alt": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2
+          },
+          "originalCorrect": {
+            "type": "boolean"
+          },
+          "isDefect": {
+            "type": "boolean"
+          },
+          "provable": {
+            "type": "boolean"
+          },
+          "natural": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "giveaway": {
+            "type": "boolean"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "blocker",
+              "major",
+              "cosmetic"
+            ]
+          },
+          "keep": {
+            "type": "boolean"
+          },
+          "why": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

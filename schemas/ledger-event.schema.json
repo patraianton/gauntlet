@@ -1,0 +1,102 @@
+{
+  "$id": "gauntlet/ledger-event.schema.json",
+  "description": "One line of ledger.jsonl (SPEC 9.15): chained fields plus the event payload.",
+  "type": "object",
+  "required": [
+    "seq",
+    "prev",
+    "hash",
+    "ts",
+    "type",
+    "runId",
+    "round",
+    "data"
+  ],
+  "properties": {
+    "seq": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "prev": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "ts": {
+      "type": "string",
+      "minLength": 10
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "init",
+        "task-set",
+        "sources-check",
+        "sources-baseline",
+        "lens-writer-issued",
+        "lenses-ingested",
+        "freeze",
+        "amend",
+        "round-open",
+        "precheck",
+        "snapshot",
+        "copy",
+        "trace-scan",
+        "slots",
+        "planter-ingested",
+        "validator-ingested",
+        "canary-commit",
+        "job-issued",
+        "answer-ingested",
+        "job-given-up",
+        "canary-reveal",
+        "match",
+        "lens-validity",
+        "source-unavailable",
+        "rerun",
+        "cluster",
+        "verify-issued",
+        "verify-ingested",
+        "dispute-add",
+        "dispute-ingested",
+        "waive",
+        "owner-decision",
+        "usage",
+        "gate",
+        "best",
+        "round-close",
+        "done",
+        "report",
+        "audit",
+        "abort",
+        "cleanup",
+        "supersede",
+        "setup-reset",
+        "guard",
+        "copy-tampered",
+        "decoys-ingested",
+        "decoy-confirmed",
+        "decoy-reveal",
+        "controls-sealed",
+        "control-dismissed"
+      ]
+    },
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "round": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "data": {
+      "type": "object"
+    }
+  }
+}

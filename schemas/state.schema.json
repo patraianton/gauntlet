@@ -1,0 +1,157 @@
+{
+  "$id": "gauntlet/state.schema.json",
+  "description": "state.json (SPEC 9.7): a cache; the ledger is the truth.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "state"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "NEW",
+        "AWAIT_LENS_WRITER",
+        "READY",
+        "AWAIT_PLANTER",
+        "AWAIT_VALIDATOR",
+        "AWAIT_REVIEWERS",
+        "AWAIT_MATCHER",
+        "AWAIT_VERIFY",
+        "AWAIT_VERIFY2",
+        "STOPPED",
+        "DONE",
+        "ABORTED"
+      ]
+    },
+    "round": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "roundKind": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "working",
+        "confirm",
+        null
+      ]
+    },
+    "lastDecision": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "FIX",
+        "CONFIRM",
+        "DONE",
+        "RERUN_LENS",
+        "STOP_PLATEAU",
+        "STOP_LIMIT",
+        "STOP_INCONCLUSIVE",
+        "STOP_OWNER",
+        "INVALID_ROUND",
+        "BLOCKED_PRECHECK",
+        "BLOCKED_TRACE",
+        null
+      ]
+    },
+    "candidate": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "round",
+        "versionHash"
+      ],
+      "properties": {
+        "round": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "versionHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "confirmsDone": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "best": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "round",
+        "versionHash"
+      ],
+      "properties": {
+        "round": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "versionHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "blockers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "majors": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "spent": {
+          "type": "number",
+          "minimum": 0
+        },
+        "estimatedJobs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "measuredRounds": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "pendingJobs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "frozen": {
+      "type": "boolean"
+    },
+    "stoppedReason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "about": "Fake `step --json` envelopes (without sig; the test signs them) for the Workflow driver test: 10 -> 10 -> 30.",
+  "sequence": [
+    {
+      "ok": true, "exitCode": 10, "command": "step", "state": "AWAIT_REVIEWERS",
+      "payload": {
+        "parallel": true,
+        "jobs": [
+          { "job": "abcdefgh", "role": "reviewer", "label": "reviewer:facts", "model": null,
+            "call": "Read the file C:\\wc\\k3m9q2xa\\abcdefgh\\PROMPT.md and do exactly what it says. Do not read anything else before it. When finished, reply with DONE followed by the answer code the check printed, and nothing else.",
+            "promptPath": "C:\\wc\\k3m9q2xa\\abcdefgh\\PROMPT.md" },
+          { "job": "hjkmnpqr", "role": "reviewer", "label": "reviewer:generalist", "model": "opus",
+            "call": "Read the file C:\\wc\\k3m9q2xa\\hjkmnpqr\\PROMPT.md and do exactly what it says. Do not read anything else before it. When finished, reply with DONE followed by the answer code the check printed, and nothing else.",
+            "promptPath": "C:\\wc\\k3m9q2xa\\hjkmnpqr\\PROMPT.md" }
+        ]
+      }
+    },
+    {
+      "ok": true, "exitCode": 10, "command": "step", "state": "AWAIT_VERIFY",
+      "payload": {
+        "parallel": true,
+        "jobs": [
+          { "job": "stuvwxyz", "role": "verifier", "label": "verifier", "model": null,
+            "call": "Read the file C:\\wc\\p7t4c8ze\\stuvwxyz\\PROMPT.md and do exactly what it says. Do not read anything else before it. When finished, reply with DONE followed by the answer code the check printed, and nothing else.",
+            "promptPath": "C:\\wc\\p7t4c8ze\\stuvwxyz\\PROMPT.md" }
+        ]
+      }
+    },
+    {
+      "ok": true, "exitCode": 30, "command": "step", "state": "STOPPED",
+      "payload": {
+        "decision": "STOP_PLATEAU",
+        "reportPath": "C:\\Users\\user\\work-copies\\demo\\gauntlet-runs\\20261006-0930-a1b2c3\\REPORT.ru.md",
+        "summaryRu": [
+          "Итог: остановлено — два круга подряд существенных проблем не стало меньше.",
+          "Открытых подтверждённых проблем: блокеров 0, существенных 2.",
+          "Лучшая версия — круг 2.",
+          "Проверка внимания: пройдена.",
+          "Отчёт: C:\\Users\\user\\work-copies\\demo\\gauntlet-runs\\20261006-0930-a1b2c3\\REPORT.ru.md"
+        ]
+      }
+    }
+  ]
+}

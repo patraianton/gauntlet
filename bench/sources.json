@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "id": "S1",
+      "what": "The bakery's price list: every price, the Loaf Box contents and the closing time of the Saturday box.",
+      "origin": "The fictional bakery's price list, shipped with the bench material in bench/material/bakery-sources/.",
+      "kind": "file",
+      "path": "C:/Users/you/gauntlet/bench/material/bakery-sources/price-list.md",
+      "expect": "contains:Loaf Box",
+      "notes": "Replace the path prefix with the absolute path of your clone before a bench run."
+    },
+    {
+      "id": "S2",
+      "what": "The texts of the bakery's pre-order page: box, add-ons, delivery, pick-up and the closing time.",
+      "origin": "The fictional pre-order page, shipped with the bench material in bench/material/bakery-sources/.",
+      "kind": "file",
+      "path": "C:/Users/you/gauntlet/bench/material/bakery-sources/order-page.txt",
+      "expect": "nonempty",
+      "notes": "Replace the path prefix with the absolute path of your clone before a bench run."
+    }
+  ]
+}

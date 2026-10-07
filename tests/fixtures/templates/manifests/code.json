@@ -1,0 +1,11 @@
+{
+  "description": "Fake material file list (copy-relative paths) used to test lens coverage of the library example.",
+  "files": [
+    "content/README.md",
+    "content/package.json",
+    "content/src/cli.mjs",
+    "content/src/export.mjs",
+    "content/tests/cli.test.mjs",
+    "content/tests/export.test.mjs"
+  ]
+}

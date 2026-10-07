@@ -1,0 +1,67 @@
+{
+  "$id": "gauntlet/answer-verifier.schema.json",
+  "description": "Verifier answer (SPEC 9.9). severity must be non-null when the verdict is confirmed (checked by ingest).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "nonce",
+    "items"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "nonce": {
+      "type": "string",
+      "minLength": 1
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "item",
+          "verdict",
+          "severity",
+          "evidence"
+        ],
+        "properties": {
+          "item": {
+            "type": "string",
+            "pattern": "^V[0-9]+$"
+          },
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "confirmed",
+              "refuted",
+              "unverifiable"
+            ]
+          },
+          "severity": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "blocker",
+              "major",
+              "cosmetic",
+              null
+            ]
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 10
+          },
+          "quoteNow": {
+            "type": "string"
+          },
+          "whereNow": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

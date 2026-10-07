@@ -1,0 +1,21 @@
+{
+  "description": "Fake material file list (copy-relative paths) used to test lens coverage of the library example.",
+  "files": [
+    "content/data/analytics.csv",
+    "content/deck.html",
+    "content/notes.md",
+    "content/prices.json",
+    "content/slides/slide-01.png",
+    "content/slides/slide-02.png",
+    "content/slides/slide-03.png",
+    "content/slides/slide-04.png",
+    "content/slides/slide-05.png",
+    "content/slides/slide-06.png",
+    "content/slides/slide-07.png",
+    "content/slides/slide-08.png",
+    "content/slides/slide-09.png",
+    "content/slides/slide-10.png",
+    "content/slides/slide-11.png",
+    "content/slides/slide-12.png"
+  ]
+}

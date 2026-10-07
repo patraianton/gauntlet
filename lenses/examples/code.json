@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "taskSha256": "94d00dc05e2829c5e6b8d905120b60e1cbe9da1a5f444812dd0b407969045ef7",
+  "requirements": [
+    {
+      "id": "R01",
+      "text": "В программе есть команда `export --csv <file>`, которая записывает все сохранённые объявления в CSV-файл.",
+      "taskQuote": "Add a command `export --csv <file>` to the CLI that writes all saved listings to a CSV file.",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R02",
+      "text": "В CSV ровно столбцы id, title, price, currency, url, saved_at.",
+      "taskQuote": "Columns: id, title, price, currency, url, saved_at.",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R03",
+      "text": "Цены с двумя знаками после запятой; файл в UTF-8 со строкой заголовков.",
+      "taskQuote": "Prices with two decimals, UTF-8 with a header row.",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R04",
+      "text": "Команда работает на Windows и macOS, а существующие команды не меняются.",
+      "taskQuote": "It must work on Windows and macOS and must not change the existing commands.",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R05",
+      "text": "Для новой команды есть тесты, README обновлён.",
+      "taskQuote": "Add tests for the new command and update the README.",
+      "ifMissing": "blocker"
+    }
+  ],
+  "lenses": [
+    {
+      "id": "correctness",
+      "title": "Поведение по заданию",
+      "duty": "Найти каждый случай, когда новая команда выдаёт неверный результат или падает: столбцы, формат чисел, кодировка, экранирование, пустые данные, ошибки.",
+      "procedure": [
+        "Read the new command's code from argument parsing to the written file.",
+        "Run the command on the sample data into your job folder and open the result.",
+        "Compare the output with the task line by line: column names and order, two-decimal prices, UTF-8, header row.",
+        "Try the cases the code must handle: no saved listings, commas, quotes and line breaks inside titles, non-Latin characters, a missing or unwritable output path."
+      ],
+      "checklist": [
+        "Are the columns exactly the ones the task lists, in that order?",
+        "Are prices written with two decimals in every case?",
+        "Is the file UTF-8 with a header row?",
+        "Are commas, quotes and line breaks in values escaped correctly?",
+        "Does the command handle an empty list and a bad output path with a clear error?",
+        "Does any existing command change its behaviour?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Every source file, with the new command traced from start to end.",
+          "kind": "all-files",
+          "glob": "**/src/*.mjs"
+        },
+        {
+          "id": "M2",
+          "rule": "Run the command on the sample data and inspect the output.",
+          "kind": "source-check",
+          "sourceId": "S1",
+          "count": 1
+        }
+      ],
+      "canaryTypes": [
+        "BRIEF",
+        "FACT-NUM",
+        "OMIT-REQ"
+      ]
+    },
+    {
+      "id": "portability",
+      "title": "Windows, macOS и старые команды",
+      "duty": "Найти всё, что сломает новую команду на Windows или macOS или изменит поведение уже существующих команд.",
+      "procedure": [
+        "Read every place the code builds paths, writes files or spawns processes, and check it on both systems (separators, drive letters, spaces and non-Latin names, line endings).",
+        "Compare the existing commands before and after the change with the diff source and list every changed line outside the new command.",
+        "Run the full test suite and record the output."
+      ],
+      "checklist": [
+        "Are paths built with the platform's path functions, never by string concatenation?",
+        "Are line endings in the CSV defined and the same on both systems?",
+        "Do file names with spaces or non-Latin characters work?",
+        "Is any existing command's code or output changed?",
+        "Does the full test suite pass?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Every source file: paths, file writes, processes.",
+          "kind": "all-files",
+          "glob": "**/src/*.mjs"
+        },
+        {
+          "id": "M2",
+          "rule": "The package manifest: scripts and engines.",
+          "kind": "all-files",
+          "glob": "**/package.json"
+        },
+        {
+          "id": "M3",
+          "rule": "The diff of the change and the full test run.",
+          "kind": "source-check",
+          "sourceId": "S2",
+          "count": 1
+        }
+      ],
+      "canaryTypes": [
+        "CONTRA",
+        "BRIEF"
+      ]
+    },
+    {
+      "id": "tests",
+      "title": "Тесты",
+      "duty": "Найти каждое требуемое заданием поведение, которое не проверяет ни один тест, и каждый тест, который пройдёт даже при неверном поведении.",
+      "procedure": [
+        "List every requirement of the task and every edge case the code handles.",
+        "For each, find the test that checks it and read its assertions.",
+        "Mark tests whose assertions would still pass if the output were wrong (for example checking only that a file exists)."
+      ],
+      "checklist": [
+        "Is every column and the header row checked by a test?",
+        "Is the two-decimal price format checked, including whole numbers?",
+        "Are escaping and non-Latin characters checked?",
+        "Is the empty-list case checked?",
+        "Do the tests run on both systems (no hard-coded paths)?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Every test file, every assertion.",
+          "kind": "all-files",
+          "glob": "**/tests/*.test.mjs"
+        }
+      ],
+      "canaryTypes": [
+        "OMIT-REQ",
+        "CONTRA"
+      ]
+    },
+    {
+      "id": "docs",
+      "title": "README и справка",
+      "duty": "Найти каждое место, где README или справка команды расходятся с тем, что делает код, или не говорят того, что нужно пользователю.",
+      "procedure": [
+        "Read the README section about the new command and the command's help text.",
+        "Compare every option, column, example and default with the code.",
+        "Run the documented example as written and compare the result with the README."
+      ],
+      "checklist": [
+        "Does the README describe the new command with its exact syntax?",
+        "Do the documented columns and format match the code?",
+        "Does the documented example run as written?",
+        "Is the help text consistent with the README?",
+        "Is the language of the README correct and clear?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "The whole README.",
+          "kind": "all-files",
+          "glob": "**/README.md"
+        }
+      ],
+      "canaryTypes": [
+        "CONTRA",
+        "LANG",
+        "PATH"
+      ]
+    },
+    {
+      "id": "generalist",
+      "title": "Первый читатель",
+      "duty": "Прочитать всю работу как человек, у которого есть только задание владельца, и найти, где работа не даёт того, что просили, трудна для понимания или в ней нет чего-то нужного.",
+      "procedure": [
+        "Read the owner's task and list everything it asks for.",
+        "Read every file of the change once, start to end.",
+        "For each thing the task asks for, find where the work delivers it, and note what is missing or only partly there."
+      ],
+      "checklist": [
+        "Is every requirement of the task delivered?",
+        "Could a new user run the command from the README alone?",
+        "Do code, tests and README agree with each other?",
+        "Is anything required missing?",
+        "Is anything confusing on first reading?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Read every file once, start to end.",
+          "kind": "all-files",
+          "glob": "**/*"
+        }
+      ],
+      "canaryTypes": [
+        "OMIT-REQ",
+        "BRIEF"
+      ]
+    }
+  ]
+}

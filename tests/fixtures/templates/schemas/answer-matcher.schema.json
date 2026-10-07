@@ -1,0 +1,57 @@
+{
+  "description": "Test double written by P5 from SPEC 9.9/9.6; the real schema lives in schemas/ (P1).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "nonce",
+    "pairs"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "nonce": {
+      "type": "string",
+      "pattern": "^PL-[A-Z2-9]{4}-[A-Z2-9]{4}$"
+    },
+    "pairs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "canary",
+          "finding",
+          "score",
+          "alsoReal",
+          "why"
+        ],
+        "properties": {
+          "canary": {
+            "type": "string",
+            "pattern": "^C[0-9]+$"
+          },
+          "finding": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-z2-9]{8}#[0-9]+$"
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "alsoReal": {
+            "type": "boolean"
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 1
+    }
+  }
+}

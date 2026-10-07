@@ -1,0 +1,73 @@
+{
+  "$id": "gauntlet/sources.schema.json",
+  "description": "sources.json (SPEC 9.4): executor-written recipes for primary sources. what/origin/notes are the author's claims: capped in length and shown to agents under an unverified banner.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "sources"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "what",
+          "kind",
+          "origin"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^S[0-9]{1,2}$"
+          },
+          "what": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "command",
+              "file"
+            ]
+          },
+          "cmd": {
+            "type": "string",
+            "minLength": 1
+          },
+          "args": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 600
+          },
+          "expect": {
+            "type": "string",
+            "pattern": "^(nonempty|contains:.+|json:[^<>=]+(>=|<=|>|<|=)-?[0-9]+(\\.[0-9]+)?)$"
+          },
+          "origin": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 300,
+            "description": "Where the data comes from and who made it (e.g. \"production database, orders table, queried by the recipe\"). Shown to the owner in SETUP-SUMMARY and the report; shown to reviewers as an unverified claim."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

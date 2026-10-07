@@ -1,0 +1,53 @@
+{
+  "$id": "gauntlet/m-escape.schema.json",
+  "description": "measurements/escapes.jsonl row (SPEC 14.7): a real problem found after \"done\".",
+  "type": "object",
+  "required": [
+    "runId",
+    "description",
+    "severity",
+    "lens",
+    "foundBy"
+  ],
+  "properties": {
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "blocker",
+        "major"
+      ]
+    },
+    "lens": {
+      "type": "string",
+      "minLength": 1
+    },
+    "foundBy": {
+      "type": "string",
+      "enum": [
+        "owner",
+        "production",
+        "later-run"
+      ]
+    },
+    "ts": {
+      "type": "string",
+      "minLength": 10
+    },
+    "ownerQuote": {
+      "type": "string",
+      "minLength": 1
+    },
+    "question": {
+      "type": "string",
+      "minLength": 10
+    }
+  }
+}

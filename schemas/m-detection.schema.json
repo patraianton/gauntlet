@@ -1,0 +1,105 @@
+{
+  "$id": "gauntlet/m-detection.schema.json",
+  "description": "measurements/detections.jsonl row (SPEC 14.7): one line per canary x reviewer job; legacy aggregate rows (SPEC 14.9) carry legacyId, k, n and unit instead.",
+  "type": "object",
+  "required": [
+    "runId"
+  ],
+  "properties": {
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "round": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "canary": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "lens": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "attempt": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "reviewerModel": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "instrumentId": {
+      "type": "string"
+    },
+    "templateSha": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "caught",
+        "seen_underclassified",
+        "missed"
+      ]
+    },
+    "stage": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "code",
+        "matcher",
+        null
+      ]
+    },
+    "matcherScore": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "maximum": 5
+    },
+    "severityGiven": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contaminated": {
+      "type": "boolean"
+    },
+    "legacyId": {
+      "type": "string"
+    },
+    "k": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "n": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "unit": {
+      "type": "string"
+    }
+  }
+}

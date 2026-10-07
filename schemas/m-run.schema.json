@@ -1,0 +1,70 @@
+{
+  "$id": "gauntlet/m-run.schema.json",
+  "description": "measurements/runs.jsonl row (SPEC 14.7): one line per run end.",
+  "type": "object",
+  "required": [
+    "runId",
+    "artifactType",
+    "instrumentId",
+    "decision",
+    "contaminated"
+  ],
+  "properties": {
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project": {
+      "type": "string"
+    },
+    "artifactType": {
+      "type": "string"
+    },
+    "instrumentId": {
+      "type": "string"
+    },
+    "models": {
+      "type": "object"
+    },
+    "lenses": {
+      "type": "array",
+      "items": {
+        "type": [
+          "string",
+          "object"
+        ]
+      }
+    },
+    "rounds": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "confirms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "decision": {
+      "type": "string"
+    },
+    "tokens": {
+      "type": "number",
+      "minimum": 0
+    },
+    "tokensEstimated": {
+      "type": "boolean"
+    },
+    "durationMin": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "seeded": {
+      "type": "boolean"
+    },
+    "contaminated": {
+      "type": "boolean"
+    }
+  }
+}

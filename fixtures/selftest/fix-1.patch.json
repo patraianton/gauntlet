@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "description": "Fixes the three known defects of version 1: the wrong package sum, the end date in post 7, the two posts without a call to action.",
+  "replacements": [
+    { "file": "page.md", "before": "3 × 15 € = 50 €", "after": "3 × 15 € = 45 €" },
+    { "file": "plan.json", "before": "Акция действует до 15 ноября.", "after": "Акция действует до 31 октября." },
+    { "file": "plan.json", "before": "\"cta\": \"\"", "after": "\"cta\": \"Запишитесь на проверку на сайте\"", "all": true }
+  ]
+}

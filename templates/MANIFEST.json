@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "version": "11",
+  "files": {
+    "agent-call.txt": "fd7b3d779172bfe9c0bbbfbcfb4f0b1d9a673bbdd2ba8eb6caee1e358d5083b2",
+    "author-notes-banner.md": "43d61580398428cb1b064137b4dad3af76759ec53d386d6d37fb66bc38d31223",
+    "canary-validator.md": "87e40cb38da8ef3eefee0f701b588f85fc4c2887b3e29665a7bd008345b40123",
+    "check-answer.mjs": "a30d4c63e28849ae5845fd56d8309acb6c36fa38af45a529793ae806e91b1125",
+    "decoy-writer.md": "d55fc367e7f8705b7b6aa2af448889db7835021e085630866d4782f4f9a5ce39",
+    "dispute-verifier.md": "f5829bf71d6c916424fad938680dd24bf6bb6ecbd66198c914e0c9a1281fa70b",
+    "lens-writer.md": "f7ceb6376fa72c0a6a28fba9c5c5e5cb22dd47f9e12d471df0b7af75fb3b09b3",
+    "matcher.md": "72876da74ef0dcc1ba6a2f61b5954db8a329bc39723daaa960af7a28701590b5",
+    "planter.md": "c023734a960e0bea9cdfbbbf8a521548234f4c0ce4b8e5f186fc12ca11a2a11c",
+    "reviewer.md": "075c50c000854dec7e97b0120eeedd45f7a0746d9db39d916e1fc937c0c656de",
+    "severity.md": "aa41a9cc9207ed5e204d6bd056c32b9fbbe290f570ee536084d221a154e22321",
+    "verifier.md": "7995b72664252d4965b6b2ab3d081af7354e0716e962bfaaab33f45ec17af4d2"
+  }
+}

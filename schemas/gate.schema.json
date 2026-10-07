@@ -1,0 +1,246 @@
+{
+  "$id": "gauntlet/gate.schema.json",
+  "description": "gate.json per round (SPEC 9.13), computed by gate.mjs, or by round.mjs for the pre-gate decisions.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "round",
+    "kind",
+    "decision",
+    "reasons"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "round": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "working",
+        "confirm"
+      ]
+    },
+    "versionHash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "FIX",
+        "CONFIRM",
+        "DONE",
+        "RERUN_LENS",
+        "STOP_PLATEAU",
+        "STOP_LIMIT",
+        "STOP_INCONCLUSIVE",
+        "STOP_OWNER",
+        "INVALID_ROUND",
+        "BLOCKED_PRECHECK",
+        "BLOCKED_TRACE"
+      ]
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "perLens": {
+      "type": "object"
+    },
+    "open": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "blocker": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "major": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unverified": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "contested": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requirements": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "pendingDisputes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "round"
+        ],
+        "properties": {
+          "round": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "working",
+              "confirm"
+            ]
+          },
+          "valid": {
+            "type": "boolean"
+          },
+          "versionHash": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "openBlockers": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "openMajors": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "distinctOpen": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "plateau": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "stagnant": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "patience": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "best": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [],
+      "properties": {
+        "round": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "versionHash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "blockers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "majors": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "rounds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxRounds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "confirmsDone": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxConfirms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "tokensSpent": {
+          "type": "number",
+          "minimum": 0
+        },
+        "nextEstimate": {
+          "type": "number",
+          "minimum": 0
+        },
+        "maxPanelTokens": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "band": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "worst"
+      ],
+      "properties": {
+        "perLens": {
+          "type": "object"
+        },
+        "worst": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      }
+    },
+    "panelCatch": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "pairsCaught": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pairsTotal": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

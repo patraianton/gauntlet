@@ -1,0 +1,1 @@
+Read the file {{PROMPT_PATH}} and do exactly what it says. Do not read anything else before it. When finished, reply with DONE followed by the answer code the check printed, and nothing else.

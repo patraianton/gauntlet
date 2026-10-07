@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "nonce": "PL-K7QZ-M2XA",
+  "instructionReceived": "Read the file D:/work/job-7/PROMPT.md and do exactly what it says. Do not read anything else before it. When finished, reply with DONE followed by the answer code the check printed, and nothing else.",
+  "receipt": [
+    {
+      "id": "Q1",
+      "answer": "\"hook\": \"Four fresh loaves, every Saturday\","
+    },
+    {
+      "id": "Q2",
+      "answer": "30"
+    },
+    {
+      "id": "Q3",
+      "answer": "18"
+    }
+  ],
+  "inspected": [
+    {
+      "minimumId": "M1",
+      "done": true,
+      "how": "Read cta and cta_text of all 30 posts in plan.json."
+    },
+    {
+      "minimumId": "M2",
+      "done": true,
+      "how": "Read all 3 sample captions in page_text.json, all captions."
+    }
+  ],
+  "sourceChecks": [
+    {
+      "sourceId": "S1",
+      "command": "curl -s https://demo-project/",
+      "result": "<h1>Crumb &amp; Co.</h1> ... (form not in the HTML)"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "R01",
+      "status": "present",
+      "where": "plan.json /posts: 30 entries"
+    },
+    {
+      "id": "R04",
+      "status": "partial",
+      "where": "plan.json /posts/12..30",
+      "note": "Rubric B posts have no call to action."
+    }
+  ],
+  "findings": [
+    {
+      "n": 1,
+      "severity": "blocker",
+      "kind": "number",
+      "location": {
+        "file": "content/content-plan/page_text.json",
+        "locator": "/samples/1/caption"
+      },
+      "quote": "= 21.30 €",
+      "problem": "The sum of the listed parts is 20.30 €, so the caption shows a wrong total.",
+      "fix": "Write 20.30 €.",
+      "evidence": "14.80 + 3.50 + 2.00 = 20.30",
+      "severityWhy": "A wrong price people will see."
+    },
+    {
+      "n": 2,
+      "severity": "major",
+      "kind": "visual",
+      "location": {
+        "file": "content/render/out/B3.png",
+        "locator": "footer, bottom right"
+      },
+      "quote": null,
+      "seen": "The logo that every other B slide has in the footer is missing on B3.",
+      "problem": "Inconsistent brand element in one slide of the series.",
+      "fix": "Render B3 with the footer logo."
+    },
+    {
+      "n": 3,
+      "severity": "major",
+      "kind": "omission",
+      "location": {
+        "file": "content/content-plan/plan.json",
+        "locator": "/posts (rubric B)"
+      },
+      "quote": null,
+      "missingWhat": "A call to action in every rubric B post, required by the task line about sending people to the service.",
+      "problem": "Readers of these posts are not led to the request.",
+      "fix": "Add the LOAF call to action to rubric B posts."
+    }
+  ],
+  "notVerified": [
+    {
+      "claim": "Requests arrive within 24 hours.",
+      "whereLooked": "curl of the home page; the form text is rendered in the browser and no source shows it."
+    }
+  ],
+  "notChecked": [
+    {
+      "what": "Video frames",
+      "why": "ffmpeg is not installed on this machine."
+    }
+  ]
+}

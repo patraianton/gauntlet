@@ -1,0 +1,101 @@
+{
+  "$id": "gauntlet/detections.schema.json",
+  "description": "detections.json per round (SPEC 9.11): one row per canary x reviewer job.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "round",
+    "detections"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "round": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "detections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "canary",
+          "lens",
+          "job",
+          "outcome"
+        ],
+        "properties": {
+          "canary": {
+            "type": "string",
+            "pattern": "^C[0-9]+$"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "attention",
+              "measurement"
+            ]
+          },
+          "targetLens": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "lens": {
+            "type": "string"
+          },
+          "job": {
+            "type": "string"
+          },
+          "attempt": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "caught",
+              "seen_underclassified",
+              "missed"
+            ]
+          },
+          "finding": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          },
+          "stage": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "code",
+              "matcher",
+              null
+            ]
+          },
+          "matcherScore": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1,
+            "maximum": 5
+          },
+          "severityGiven": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

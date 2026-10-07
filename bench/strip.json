@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "excludeGlobs": [],
+  "regex": [
+    {
+      "glob": "content-plan/AUTHOR-NOTES.md",
+      "pattern": " Plus any other ideas the panel suggests\\.",
+      "replace": "",
+      "expect": "atLeastOne",
+      "why": "the brief mentions the review panel that wrote earlier ideas"
+    },
+    {
+      "glob": "page/index.html",
+      "pattern": "<h3>What the reviewers proposed and what went in</h3>\\s*<p>Nothing yet\\.</p>\\s*",
+      "replace": "",
+      "expect": "atLeastOne",
+      "why": "a heading about what earlier reviewers proposed"
+    },
+    {
+      "glob": "page/index.html",
+      "pattern": "<p>Version 3 of this plan, built 2026-10-05\\.</p>\\s*",
+      "replace": "",
+      "expect": "atLeastOne",
+      "why": "a version number of earlier review rounds"
+    }
+  ],
+  "traceAllow": [
+    { "phrase": "oven control panel", "why": "the display of the bakery's oven, a product word" }
+  ]
+}

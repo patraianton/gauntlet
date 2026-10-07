@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "nonce": "PL-K7QZ-M2XA",
+  "items": [
+    {
+      "item": "V1",
+      "verdict": "confirmed",
+      "severity": "major",
+      "evidence": "Opened content/render/out/B3.png: footer has no logo; B1 and B2 have it.",
+      "quoteNow": "(image)",
+      "whereNow": "content/render/out/B3.png footer"
+    },
+    {
+      "item": "V2",
+      "verdict": "refuted",
+      "severity": null,
+      "evidence": "copy.ts line 41: \"Atlase bez maksas un bez saistībām\" — the claim is on the site."
+    },
+    {
+      "item": "V3",
+      "verdict": "unverifiable",
+      "severity": null,
+      "evidence": "S2 returned an empty list twice; the count cannot be checked."
+    }
+  ]
+}

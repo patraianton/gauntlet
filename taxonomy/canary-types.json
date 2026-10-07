@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "types": [
+    {
+      "id": "FACT-NUM",
+      "title": "Wrong number or arithmetic",
+      "definition": "A number, sum, date, count or price that is wrong and can be proven wrong from the material itself or from a listed source.",
+      "example": "A caption adds 14.80 + 3.50 + 2.00 and states the total as 21.30 instead of 20.30.",
+      "attentionEligible": true,
+      "omission": false,
+      "needsRebuild": false,
+      "defaultFloor": "major"
+    },
+    {
+      "id": "FACT-CLAIM",
+      "title": "Claim contradicted by the material or a source",
+      "definition": "A statement of fact that the material elsewhere, or a listed source, shows to be false.",
+      "example": "A post says the service works in Estonia while the offer page and the site say Finland only.",
+      "attentionEligible": true,
+      "omission": false,
+      "needsRebuild": false,
+      "defaultFloor": "major"
+    },
+    {
+      "id": "CONTRA",
+      "title": "Two places in the work contradict each other",
+      "definition": "Two parts of the work say incompatible things about the same subject; at least one of them must be wrong.",
+      "example": "The strategy section promises 38 short videos while the plan table lists 18.",
+      "attentionEligible": true,
+      "omission": false,
+      "needsRebuild": false,
+      "defaultFloor": "major"
+    },
+    {
+      "id": "LANG",
+      "title": "Language error",
+      "definition": "A grammar, spelling or diacritics error, a word in the wrong script, or a calque that a native speaker of the text's language (for example Russian, Spanish or English) will notice.",
+      "example": "Spanish 'la problema' instead of the correct 'el problema'.",
+      "attentionEligible": true,
+      "omission": false,
+      "needsRebuild": false,
+      "defaultFloor": "major"
+    },
+    {
+      "id": "PATH",
+      "title": "Broken step on the path to the goal",
+      "definition": "The reader cannot complete the intended action: a call-to-action word that the system will not recognise, a wrong link target, a reference to a form or button that does not exist.",
+      "example": "The reader is asked to send the code word in Cyrillic letters while the reply bot only reacts to the Latin word.",
+      "attentionEligible": true,
+      "omission": false,
+      "needsRebuild": false,
+      "defaultFloor": "major"
+    },
+    {
+      "id": "BRIEF",
+      "title": "Violates an explicit line of the owner's task",
+      "definition": "The work does something the owner's task explicitly forbids, or does it differently from an explicit instruction in the task.",
+      "example": "The task says every post must lead to the request form; one post sends readers to a third-party listing site.",
+      "attentionEligible": true,
+      "omission": false,
+      "needsRebuild": false,
+      "defaultFloor": "major"
+    },
+    {
+      "id": "POLICY",
+      "title": "Contradicts a stated rule, policy, platform rule or law",
+      "definition": "The work contradicts a rule written in the material, the site's own policy, a platform's rules or the law.",
+      "example": "A post promises a guarantee although the material's own rules forbid promising a guarantee.",
+      "attentionEligible": false,
+      "omission": false,
+      "needsRebuild": false,
+      "defaultFloor": "major"
+    },
+    {
+      "id": "OMIT-REQ",
+      "title": "Required element removed",
+      "definition": "A deliverable, a call to action or one item of a required series is missing although the task or the material requires it.",
+      "example": "One post of a series that must all end with a call to action has its closing call to action removed.",
+      "attentionEligible": true,
+      "omission": true,
+      "needsRebuild": false,
+      "defaultFloor": "major"
+    },
+    {
+      "id": "OMIT-CAVEAT",
+      "title": "Required caveat, disclaimer or attribution removed",
+      "definition": "A caveat, disclaimer or source attribution that the claim next to it needs has been removed.",
+      "example": "A price comparison loses its sentence saying that prices are examples from a given date.",
+      "attentionEligible": false,
+      "omission": true,
+      "needsRebuild": false,
+      "defaultFloor": "major"
+    },
+    {
+      "id": "VISUAL",
+      "title": "Rendered visual defect",
+      "definition": "A defect that is visible only in the rendered output: a missing logo, overlapping text, unreadable contrast. Needs a rebuild of the rendered files and is used only when visual canaries are allowed for the run.",
+      "example": "The footer logo is missing from one slide of a series where every other slide has it.",
+      "attentionEligible": true,
+      "omission": false,
+      "needsRebuild": true,
+      "defaultFloor": "major"
+    }
+  ]
+}

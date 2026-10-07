@@ -1,0 +1,91 @@
+{
+  "$id": "gauntlet/strip.schema.json",
+  "description": "strip.json (SPEC 9.5): rules that remove review traces from the review copy.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "excludeGlobs",
+    "regex",
+    "traceAllow"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "excludeGlobs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "regex": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "glob",
+          "pattern",
+          "expect",
+          "why"
+        ],
+        "properties": {
+          "glob": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pattern": {
+            "type": "string",
+            "minLength": 1
+          },
+          "flags": {
+            "type": "string",
+            "pattern": "^[gimsuy]*$"
+          },
+          "replace": {
+            "type": "string"
+          },
+          "expect": {
+            "type": "string",
+            "enum": [
+              "any",
+              "atLeastOne",
+              "zero"
+            ]
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "rebuildEnv": {
+      "type": "object"
+    },
+    "traceAllow": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "phrase",
+          "why"
+        ],
+        "properties": {
+          "phrase": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 120
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "taskSha256": "a7f58bfcda63896af6d02df23fc0676faed75f056077164a80bdcec560d7f3f8",
+  "requirements": [
+    {
+      "id": "R01",
+      "text": "Отчёт объясняет, почему в сентябре меньше новых подписчиков рассылки подтвердили адрес почты, чем в августе.",
+      "taskQuote": "why fewer newsletter subscribers confirmed their e-mail address in September than in August",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R02",
+      "text": "Каждое число взято из выгруженных данных в папке data.",
+      "taskQuote": "every number in the report must come from it",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R03",
+      "text": "Два месяца сравниваются по каналу регистрации и по стране.",
+      "taskQuote": "Compare the two months by signup channel and by country.",
+      "ifMissing": "blocker"
+    },
+    {
+      "id": "R04",
+      "text": "Отчёт заканчивается тремя рекомендациями, у каждой указана цена.",
+      "taskQuote": "End with three recommendations and what each would cost.",
+      "ifMissing": "blocker"
+    }
+  ],
+  "lenses": [
+    {
+      "id": "numbers",
+      "title": "Числа против данных",
+      "duty": "Найти каждое число, долю, значение на графике или ячейку таблицы в отчёте, которые не следуют из выгруженных данных.",
+      "procedure": [
+        "List every number in the report, its tables and its charts.",
+        "Recompute each one from the data files: counts, conversion rates, differences between the months, shares per channel and country.",
+        "Check that every chart shows the same values as the table or text it illustrates.",
+        "Check that every rate uses the same definition (which users, which window) in every place."
+      ],
+      "checklist": [
+        "Does every count match the data files?",
+        "Is every rate computed with a stated and consistent definition?",
+        "Are differences between August and September computed correctly?",
+        "Do charts match the numbers in the text and tables?",
+        "Is any number stated without a way to trace it to the data?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Every data file, with the totals per month recomputed.",
+          "kind": "all-files",
+          "glob": "**/data/*.csv"
+        },
+        {
+          "id": "M2",
+          "rule": "Every number in the report text and tables.",
+          "kind": "all-files",
+          "glob": "**/report.md"
+        },
+        {
+          "id": "M3",
+          "rule": "Every chart image.",
+          "kind": "all-files",
+          "glob": "**/charts/*.png"
+        },
+        {
+          "id": "M4",
+          "rule": "Recompute the headline conversion rates with a script and report the commands.",
+          "kind": "source-check",
+          "sourceId": "S1",
+          "count": 2
+        }
+      ],
+      "canaryTypes": [
+        "FACT-NUM",
+        "CONTRA"
+      ]
+    },
+    {
+      "id": "method",
+      "title": "Метод и выводы о причинах",
+      "duty": "Найти каждый вывод, который данные не подтверждают: неверные сравнения, смешанные определения, забытые группы и причины, названные без доказательств.",
+      "procedure": [
+        "Write down each causal claim the report makes about the drop.",
+        "For each claim, find the comparison that supports it and check that it compares like with like (same definitions, same time windows, enough users).",
+        "Check that the breakdown by channel and by country covers every channel and country present in the data.",
+        "Look for a simpler explanation in the data that the report does not mention (mix shift, a tracking change, a small segment)."
+      ],
+      "checklist": [
+        "Is each causal claim supported by a comparison in the data?",
+        "Are segments with very few users treated with care?",
+        "Does the breakdown cover every channel and country in the data?",
+        "Are alternative explanations considered?",
+        "Are limits of the data stated where they matter?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "The whole report text.",
+          "kind": "all-files",
+          "glob": "**/report.md"
+        },
+        {
+          "id": "M2",
+          "rule": "The method notes in full.",
+          "kind": "all-files",
+          "glob": "**/method.md"
+        },
+        {
+          "id": "M3",
+          "rule": "List every channel and country present in the data files and compare with the report.",
+          "kind": "action",
+          "glob": "**/data/*.csv"
+        }
+      ],
+      "canaryTypes": [
+        "FACT-CLAIM",
+        "OMIT-CAVEAT",
+        "CONTRA"
+      ]
+    },
+    {
+      "id": "actions",
+      "title": "Рекомендации и их цена",
+      "duty": "Найти каждую рекомендацию, которая не следует из находок, невыполнима или у которой нет цены или цена неверна.",
+      "procedure": [
+        "List the recommendations and the finding each one answers.",
+        "Check that each recommendation addresses a cause the report actually shows.",
+        "Check each cost: what it includes, how it was computed, and whether the sum is right."
+      ],
+      "checklist": [
+        "Are there exactly three recommendations?",
+        "Does each recommendation follow from a finding of the report?",
+        "Does each have a cost, and is the cost computed correctly?",
+        "Is each recommendation something the team can actually do?",
+        "Is the expected effect stated, with how it would be measured?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "The recommendations section and every finding it refers to.",
+          "kind": "all-files",
+          "glob": "**/report.md"
+        }
+      ],
+      "canaryTypes": [
+        "OMIT-REQ",
+        "FACT-NUM",
+        "BRIEF"
+      ]
+    },
+    {
+      "id": "generalist",
+      "title": "Первый читатель",
+      "duty": "Прочитать всю работу как человек, у которого есть только задание владельца, и найти, где работа не даёт того, что просили, трудна для понимания или в ней нет чего-то нужного.",
+      "procedure": [
+        "Read the owner's task and list everything it asks for.",
+        "Read every file of the work once, start to end.",
+        "For each thing the task asks for, find where the work delivers it, and note what is missing or only partly there."
+      ],
+      "checklist": [
+        "Is every requirement of the task delivered?",
+        "Is the answer to the main question stated plainly near the start?",
+        "Do the parts of the work agree with each other?",
+        "Is anything required missing?",
+        "Is anything confusing on first reading?"
+      ],
+      "minimum": [
+        {
+          "id": "M1",
+          "rule": "Read every file once, start to end.",
+          "kind": "all-files",
+          "glob": "**/*"
+        }
+      ],
+      "canaryTypes": [
+        "OMIT-REQ",
+        "BRIEF"
+      ]
+    }
+  ]
+}

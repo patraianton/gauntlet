@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "nonce": "PL-K7QZ-M2XA",
+  "pairs": [
+    {
+      "canary": "C1",
+      "finding": "k3mzq8wd#1",
+      "score": 5,
+      "alsoReal": false,
+      "why": "Same caption and the same wrong total."
+    },
+    {
+      "canary": "C2",
+      "finding": null,
+      "score": 1,
+      "alsoReal": false,
+      "why": "No finding shown."
+    }
+  ]
+}

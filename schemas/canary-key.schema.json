@@ -1,0 +1,124 @@
+{
+  "$id": "gauntlet/canary-key.schema.json",
+  "description": "Canary key (SPEC 9.10): sealed in the data home, then rounds/NN/canaries.json. Also the shape of a fixed bench key.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "canaries"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "runId": {
+      "type": "string"
+    },
+    "round": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "seedHex": {
+      "type": "string",
+      "pattern": "^[0-9a-f]*$"
+    },
+    "canaries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "canary",
+          "file",
+          "before",
+          "after"
+        ],
+        "properties": {
+          "canary": {
+            "type": "string",
+            "pattern": "^C[0-9]+$"
+          },
+          "slot": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "attention",
+              "measurement"
+            ]
+          },
+          "targetLens": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "type": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string",
+            "minLength": 1
+          },
+          "locator": {
+            "type": "string"
+          },
+          "before": {
+            "type": "string"
+          },
+          "after": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "howProvable": {
+            "type": "string"
+          },
+          "intendedSeverity": {
+            "type": "string",
+            "enum": [
+              "blocker",
+              "major",
+              "cosmetic"
+            ]
+          },
+          "validatorSeverity": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "blocker",
+              "major",
+              "cosmetic",
+              null
+            ]
+          },
+          "positionFraction": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1
+          },
+          "band": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "start",
+              "middle",
+              "end",
+              null
+            ]
+          },
+          "prePlanted": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

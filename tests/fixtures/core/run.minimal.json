@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "runId": "20261006-0930-a1b2c3",
+  "project": "demo-project",
+  "artifactType": "marketing-plan",
+  "createdAt": "2026-10-06T09:30:00.000+03:00",
+  "projectDir": "C:\\Users\\user\\work-copies\\demo-project",
+  "reviewBase": "C:\\Users\\user\\work-copies\\demo-project\\wc",
+  "reportDir": "C:\\Users\\user\\work-copies\\demo-project\\reports",
+  "language": { "answers": "ru", "report": "ru" },
+  "ownerTarget": "9.5",
+  "material": {
+    "roots": [
+      { "path": "C:\\Users\\user\\work-copies\\demo-project\\content", "as": "content", "include": ["**/*"] }
+    ],
+    "authorNotes": ["content/AUTHOR-NOTES.md"]
+  }
+}
